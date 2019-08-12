@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Canvas</title>
+</head>
+
+<body>
+<canvas id="canvas" width="480" height="480"></canvas>
+<script src="https://code.jquery.com/jquery-2.1.0.js"></script>
+<script>
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.lineWidth = 4;
+    ctx.strokeRect(0, 0, 480, 480);
+    for (var j = 0; j < 8; ++j) {
+        for (var i = 0; i < 4; ++i) {
+            ctx.fillRect((j + 1)%2*60 + i*120, 60*j, 60, 60);
+        }
+    }
+    var red = [];
+    ctx.fillStyle = "Red";
+    for (var piece = 0; piece < 12; ++piece)
+    {
+        red.push([(piece - piece%4) / 4 + 1, (piece%4 + 1)*2 - ((piece - piece%4) / 4 + 1)%2]);
+        ctx.beginPath();
+        ctx.arc(red[piece][1]*60 - 30, red[piece][0]*60 - 30, 27, 0, 2 * Math.PI, false);
+        ctx.fill();        
+    }
+    var blue = [];
+    ctx.fillStyle = "Blue";
+    for (var piece = 0; piece < 12; ++piece)
+    {
+        blue.push([5 + (piece - piece%4) / 4 + 1, (piece%4 + 1)*2 - (5 + (piece - piece%4) / 4 + 1)%2]);
+        ctx.beginPath();
+        ctx.arc(blue[piece][1]*60 - 30, blue[piece][0]*60 - 30, 27, 0, 2 * Math.PI, false);
+        ctx.fill();      
+    }
+    var player = 0;
+    var move = 0;
+    var moving = [];
+    var whatPiece;
+    var clicking = function(event)
+    {
+        var click = [];
+        click.push((event.pageY - event.pageY%60) / 60 + 1);
+        click.push((event.pageX - event.pageX%60) / 60 + 1);
+        if (move)
+        {        
+            if (click[0] == moving[0] && click[1] == moving[1])
+            {
+                move = 0;
+                ctx.fillStyle = "White";
+                ctx.beginPath();
+                ctx.arc(moving[1]*60 - 30, moving[0]*60 - 30, 30, 0, 2 * Math.PI, false);
+                ctx.fill();   
+                if (player) ctx.fillStyle = "Blue"; else ctx.fillStyle = "Red";
+                ctx.beginPath();
+                ctx.arc(moving[1]*60 - 30, moving[0]*60 - 30, 27, 0, 2 * Math.PI, false);
+                ctx.fill();
+                ctx.lineWidth = 4;
+                ctx.strokeRect(0, 0, 480, 480);
+                return;
+                
+            }
+            for (var piece = 0; piece < 12; piece++)
+            {
+                if (red[piece][0] == click[0] && red[piece][1] == click[1])
+                    return;
+                else if (blue[piece][0] == click[0] && blue[piece][1] == click[1])
+                    return; 
+            }            
+            if (player)
+            {
+                if (click[0] - moving[0] == -1)
+                {
+                    if (Math.abs(click[1] - moving[1]) == 1)
+                    {
+                        ctx.fillStyle = "White";
+                        ctx.beginPath();
+                        ctx.arc(moving[1]*60 - 30, moving[0]*60 - 30, 30, 0, 2 * Math.PI, false);
+                        ctx.fill();   
+                        ctx.fillStyle = "Blue";
+                        ctx.beginPath();
+                        ctx.arc(click[1]*60 - 30, click[0]*60 - 30, 27, 0, 2 * Math.PI, false);
+                        ctx.fill();
+                        ctx.lineWidth = 4;
+                        ctx.strokeRect(0, 0, 480, 480);
+                        player = 0;
+                        move = 0;
+                        blue[whatPiece] = click;
+                    }                        
+                }
+                else if (click[0] - moving[0] == -2)
+                {
+                    var doesRedExist = 0;
+                    var whatRedPiece;
+                    if (click[1] - moving[1] == -2)
+                    {
+                        for (var piece = 0; piece < 12; piece++)
+                        {
+                            if (red[piece][0] - moving[0] == -1 && red[piece][1] - moving[1] == -1)
+                            {
+                                doesRedExist = 1;
+                                whatRedPiece = piece;
+                            }
+                        }
+                    }
+                    else if  (click[1] - moving[1] == 2)
+                    {
+                        for (var piece = 0; piece < 12; piece++)
+                        {
+                            if (red[piece][0] - moving[0] == -1 && red[piece][1] - moving[1] == 1)
+                            {
+                                doesRedExist = 1;
+                                whatRedPiece = piece;
+                            }
+                        }
+                    }
+                    if (doesRedExist)
+                    {
+                        ctx.fillStyle = "White";
+                        ctx.beginPath();
+                        ctx.arc(moving[1]*60 - 30, moving[0]*60 - 30, 30, 0, 2 * Math.PI, false);
+                        ctx.fill();   
+                        ctx.beginPath();
+                        ctx.arc(red[whatRedPiece][1]*60 - 30, red[whatRedPiece][0]*60 - 30, 30, 0, 2 * Math.PI, false);
+                        ctx.fill();   
+                        ctx.fillStyle = "Blue";
+                        ctx.beginPath();
+                        ctx.arc(click[1]*60 - 30, click[0]*60 - 30, 27, 0, 2 * Math.PI, false);
+                        ctx.fill();
+                        ctx.lineWidth = 4;
+                        ctx.strokeRect(0, 0, 480, 480);
+                        player = 0;
+                        move = 0;
+                        blue[whatPiece] = click;
+                        red[whatRedPiece] = [0, 0];
+                    }
+                }
+            }            
+            else
+            {
+                if (click[0] - moving[0] == 1)
+                {
+                    if (Math.abs(click[1] - moving[1]) == 1)
+                    {
+                        ctx.fillStyle = "White";
+                        ctx.beginPath();
+                        ctx.arc(moving[1]*60 - 30, moving[0]*60 - 30, 30, 0, 2 * Math.PI, false);
+                        ctx.fill();   
+                        ctx.fillStyle = "Red";
+                        ctx.beginPath();
+                        ctx.arc(click[1]*60 - 30, click[0]*60 - 30, 27, 0, 2 * Math.PI, false);
+                        ctx.fill();
+                        ctx.lineWidth = 4;
+                        ctx.strokeRect(0, 0, 480, 480);
+                        player = 1;
+                        move = 0;
+                        red[whatPiece] = click;
+                    }                        
+                }
+                else if (click[0] - moving[0] == 2)
+                {
+                    var doesBlueExist = 0;
+                    var whatBluePiece;
+                    if (click[1] - moving[1] == -2)
+                    {
+                        for (var piece = 0; piece < 12; piece++)
+                        {
+                            if (blue[piece][0] - moving[0] == 1 && blue[piece][1] - moving[1] == -1)
+                            {
+                                doesBlueExist = 1;
+                                whatBluePiece = piece;
+                            }
+                        }
+                    }
+                    else if  (click[1] - moving[1] == 2)
+                    {
+                        for (var piece = 0; piece < 12; piece++)
+                        {
+                            if (blue[piece][0] - moving[0] == 1 && blue[piece][1] - moving[1] == 1)
+                            {
+                                doesBlueExist = 1;
+                                whatBluePiece = piece;
+                            }
+                        }
+                    }
+                    if (doesBlueExist)
+                    {
+                        ctx.fillStyle = "White";
+                        ctx.beginPath();
+                        ctx.arc(moving[1]*60 - 30, moving[0]*60 - 30, 30, 0, 2 * Math.PI, false);
+                        ctx.fill();   
+                        ctx.beginPath();
+                        ctx.arc(blue[whatBluePiece][1]*60 - 30, blue[whatBluePiece][0]*60 - 30, 30, 0, 2 * Math.PI, false);
+                        ctx.fill();   
+                        ctx.fillStyle = "Red";
+                        ctx.beginPath();
+                        ctx.arc(click[1]*60 - 30, click[0]*60 - 30, 27, 0, 2 * Math.PI, false);
+                        ctx.fill();
+                        ctx.lineWidth = 4;
+                        ctx.strokeRect(0, 0, 480, 480);
+                        player = 1;
+                        move = 0;
+                        red[whatPiece] = click;
+                        blue[whatBluePiece] = [0, 0];
+                    }
+                }
+            }           
+        }
+        else
+        {     
+            var pieceExists = 0;
+            var canMove1 = 1;
+            var auxCanMove1 = 0;
+            for (var piece = 0; piece < 12; piece++)
+            {            
+                var varRed = [red[piece][0] - click[0], red[piece][1] - click[1]];
+                var varBlue = [blue[piece][0] - click[0], blue[piece][1] - click[1]];
+               
+                
+                if (!player)
+                {
+                    if (varRed[0] == 0 && varRed[1] == 0)
+                    {
+                        pieceExists = 1;
+                        whatPiece = piece;
+                    }
+                    else if (varRed[0] == 1 && Math.abs(varRed[1]) == 1)
+                        auxCanMove1++;
+                }
+                
+                
+                if (player)
+                {
+                    if (varBlue[0] == 0 && varBlue[1] == 0)
+                    {
+                        pieceExists = 1;
+                        whatPiece  = piece;
+                    }
+                    else if (varBlue[0] == -1 && Math.abs(varBlue[1]) == 1)
+                        auxCanMove1++;
+                }
+                
+                
+                if (auxCanMove1 == 2){
+                    canMove1 = 0;
+                    console.log("Beep boop");}
+                        
+            }
+            if (pieceExists && canMove1) {
+                if (player)
+                {
+                    move = 1;
+                    ctx.fillStyle = "DarkBlue";
+                    ctx.beginPath();
+                    ctx.arc(blue[whatPiece][1]*60 - 30, blue[whatPiece][0]*60 - 30, 27, 0, 2 * Math.PI, false);
+                    ctx.fill();
+                    ctx.lineWidth = 4;
+                    ctx.strokeRect(0, 0, 480, 480);
+                    moving = blue[whatPiece];
+                }
+                else
+                {
+                    move = 1;
+                    ctx.fillStyle = "DarkRed";
+                    ctx.beginPath();
+                    ctx.arc(red[whatPiece][1]*60 - 30, red[whatPiece][0]*60 - 30, 27, 0, 2 * Math.PI, false);
+                    ctx.fill();
+                    ctx.lineWidth = 4;
+                    ctx.strokeRect(0, 0, 480, 480);
+                    moving = red[whatPiece];
+                }                
+            }
+        }
+    }
+    $("canvas").click(clicking);
+</script>
+</body>
+</html>
