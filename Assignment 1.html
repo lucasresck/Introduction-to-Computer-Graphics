@@ -39,6 +39,23 @@
     var move = 0;
     var moving = [];
     var whatPiece;
+    var blank = function(where)
+    {
+        ctx.fillStyle = "White";
+        ctx.beginPath();
+        ctx.arc(where[1]*60 - 30, where[0]*60 - 30, 30, 0, 2 * Math.PI, false);
+        ctx.fill(); 
+    }
+    var moveMe = function(from, to, color)
+    {
+        blank(from);
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(to[1]*60 - 30, to[0]*60 - 30, 27, 0, 2 * Math.PI, false);
+        ctx.fill();
+        ctx.lineWidth = 4;
+        ctx.strokeRect(0, 0, 480, 480);
+    }
     var clicking = function(event)
     {
         var click = [];
@@ -46,19 +63,14 @@
         click.push((event.pageX - event.pageX%60) / 60 + 1);
         if (move)
         {        
+        console.log("Beep");
             if (click[0] == moving[0] && click[1] == moving[1])
             {
                 move = 0;
-                ctx.fillStyle = "White";
-                ctx.beginPath();
-                ctx.arc(moving[1]*60 - 30, moving[0]*60 - 30, 30, 0, 2 * Math.PI, false);
-                ctx.fill();   
-                if (player) ctx.fillStyle = "Blue"; else ctx.fillStyle = "Red";
-                ctx.beginPath();
-                ctx.arc(moving[1]*60 - 30, moving[0]*60 - 30, 27, 0, 2 * Math.PI, false);
-                ctx.fill();
-                ctx.lineWidth = 4;
-                ctx.strokeRect(0, 0, 480, 480);
+                blank(moving);
+                var color;
+                if (player) color = "Blue"; else color = "Red";
+                moveMe(moving, moving, color);
                 return;
                 
             }
@@ -75,16 +87,7 @@
                 {
                     if (Math.abs(click[1] - moving[1]) == 1)
                     {
-                        ctx.fillStyle = "White";
-                        ctx.beginPath();
-                        ctx.arc(moving[1]*60 - 30, moving[0]*60 - 30, 30, 0, 2 * Math.PI, false);
-                        ctx.fill();   
-                        ctx.fillStyle = "Blue";
-                        ctx.beginPath();
-                        ctx.arc(click[1]*60 - 30, click[0]*60 - 30, 27, 0, 2 * Math.PI, false);
-                        ctx.fill();
-                        ctx.lineWidth = 4;
-                        ctx.strokeRect(0, 0, 480, 480);
+                        moveMe(moving, click, "Blue");
                         player = 0;
                         move = 0;
                         blue[whatPiece] = click;
@@ -118,19 +121,8 @@
                     }
                     if (doesRedExist)
                     {
-                        ctx.fillStyle = "White";
-                        ctx.beginPath();
-                        ctx.arc(moving[1]*60 - 30, moving[0]*60 - 30, 30, 0, 2 * Math.PI, false);
-                        ctx.fill();   
-                        ctx.beginPath();
-                        ctx.arc(red[whatRedPiece][1]*60 - 30, red[whatRedPiece][0]*60 - 30, 30, 0, 2 * Math.PI, false);
-                        ctx.fill();   
-                        ctx.fillStyle = "Blue";
-                        ctx.beginPath();
-                        ctx.arc(click[1]*60 - 30, click[0]*60 - 30, 27, 0, 2 * Math.PI, false);
-                        ctx.fill();
-                        ctx.lineWidth = 4;
-                        ctx.strokeRect(0, 0, 480, 480);
+                        moveMe(moving, click, "Blue");
+                        blank(red[whatRedPiece]);
                         player = 0;
                         move = 0;
                         blue[whatPiece] = click;
@@ -144,16 +136,7 @@
                 {
                     if (Math.abs(click[1] - moving[1]) == 1)
                     {
-                        ctx.fillStyle = "White";
-                        ctx.beginPath();
-                        ctx.arc(moving[1]*60 - 30, moving[0]*60 - 30, 30, 0, 2 * Math.PI, false);
-                        ctx.fill();   
-                        ctx.fillStyle = "Red";
-                        ctx.beginPath();
-                        ctx.arc(click[1]*60 - 30, click[0]*60 - 30, 27, 0, 2 * Math.PI, false);
-                        ctx.fill();
-                        ctx.lineWidth = 4;
-                        ctx.strokeRect(0, 0, 480, 480);
+                        moveMe(moving, click, "Red");
                         player = 1;
                         move = 0;
                         red[whatPiece] = click;
@@ -187,19 +170,8 @@
                     }
                     if (doesBlueExist)
                     {
-                        ctx.fillStyle = "White";
-                        ctx.beginPath();
-                        ctx.arc(moving[1]*60 - 30, moving[0]*60 - 30, 30, 0, 2 * Math.PI, false);
-                        ctx.fill();   
-                        ctx.beginPath();
-                        ctx.arc(blue[whatBluePiece][1]*60 - 30, blue[whatBluePiece][0]*60 - 30, 30, 0, 2 * Math.PI, false);
-                        ctx.fill();   
-                        ctx.fillStyle = "Red";
-                        ctx.beginPath();
-                        ctx.arc(click[1]*60 - 30, click[0]*60 - 30, 27, 0, 2 * Math.PI, false);
-                        ctx.fill();
-                        ctx.lineWidth = 4;
-                        ctx.strokeRect(0, 0, 480, 480);
+                        moveMe(moving, click, "Red");
+                        blank(blue[whatBluePiece]);
                         player = 1;
                         move = 0;
                         red[whatPiece] = click;
@@ -252,23 +224,13 @@
                 if (player)
                 {
                     move = 1;
-                    ctx.fillStyle = "DarkBlue";
-                    ctx.beginPath();
-                    ctx.arc(blue[whatPiece][1]*60 - 30, blue[whatPiece][0]*60 - 30, 27, 0, 2 * Math.PI, false);
-                    ctx.fill();
-                    ctx.lineWidth = 4;
-                    ctx.strokeRect(0, 0, 480, 480);
+                    moveMe(blue[whatPiece], blue[whatPiece], "DarkBlue");
                     moving = blue[whatPiece];
                 }
                 else
                 {
                     move = 1;
-                    ctx.fillStyle = "DarkRed";
-                    ctx.beginPath();
-                    ctx.arc(red[whatPiece][1]*60 - 30, red[whatPiece][0]*60 - 30, 27, 0, 2 * Math.PI, false);
-                    ctx.fill();
-                    ctx.lineWidth = 4;
-                    ctx.strokeRect(0, 0, 480, 480);
+                    moveMe(red[whatPiece], red[whatPiece], "DarkRed");
                     moving = red[whatPiece];
                 }                
             }
