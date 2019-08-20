@@ -21,35 +21,48 @@
     ctx.fillStyle = "Red";
     for (var piece = 0; piece < 12; ++piece)
     {
-        red.push([(piece - piece%4) / 4 + 1, (piece%4 + 1)*2 - ((piece - piece%4) / 4 + 1)%2]);
+        red.push([(piece - piece%4) / 4 + 1, (piece%4 + 1)*2 - ((piece - piece%4) / 4)%2, 0]);
         ctx.beginPath();
         ctx.arc(red[piece][1]*60 - 30, red[piece][0]*60 - 30, 27, 0, 2 * Math.PI, false);
         ctx.fill();        
     }
+    red.push([0, 0, 0]);
     var blue = [];
     ctx.fillStyle = "Blue";
     for (var piece = 0; piece < 12; ++piece)
     {
-        blue.push([5 + (piece - piece%4) / 4 + 1, (piece%4 + 1)*2 - (5 + (piece - piece%4) / 4 + 1)%2]);
+        blue.push([5 + (piece - piece%4) / 4 + 1, (piece%4 + 1)*2 - (5 + (piece - piece%4) / 4)%2, 0]);
         ctx.beginPath();
         ctx.arc(blue[piece][1]*60 - 30, blue[piece][0]*60 - 30, 27, 0, 2 * Math.PI, false);
         ctx.fill();      
     }
+    blue.push([0, 0, 0]);
     var player = 0;
     var move = 0;
     var moving = [];
     var whatPiece;
     var blank = function(where)
     {
-        ctx.fillStyle = "White";
+        ctx.fillStyle = "Black";
         ctx.beginPath();
         ctx.arc(where[1]*60 - 30, where[0]*60 - 30, 30, 0, 2 * Math.PI, false);
         ctx.fill(); 
     }
-    var moveMe = function(from, to, color)
+    var moveMe = function(from, to, color, whatPiece = 12)
     {
         blank(from);
-        ctx.fillStyle = color;
+        if (color == "Red" && to[0] == 8)
+        {
+            red[whatPiece][2] = 1;
+            ctx.fillStyle = "Coral";
+        }
+        else if (color == "Blue" && to[0] == 1)
+        {
+            blue[whatPiece][2] = 1;
+            ctx.fillStyle = "CadetBlue";
+        }
+        else
+            ctx.fillStyle = color;
         ctx.beginPath();
         ctx.arc(to[1]*60 - 30, to[0]*60 - 30, 27, 0, 2 * Math.PI, false);
         ctx.fill();
@@ -62,8 +75,7 @@
         click.push((event.pageY - event.pageY%60) / 60 + 1);
         click.push((event.pageX - event.pageX%60) / 60 + 1);
         if (move)
-        {        
-        console.log("Beep");
+        {
             if (click[0] == moving[0] && click[1] == moving[1])
             {
                 move = 0;
@@ -215,10 +227,8 @@
                 }
                 
                 
-                if (auxCanMove1 == 2){
-                    canMove1 = 0;
-                    console.log("Beep boop");}
-                        
+                if (auxCanMove1 == 2)
+                    canMove1 = 0;                        
             }
             if (pieceExists && canMove1) {
                 if (player)
