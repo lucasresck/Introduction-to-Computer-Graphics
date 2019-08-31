@@ -10,242 +10,216 @@
 <script>
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
-    ctx.lineWidth = 4;
-    ctx.strokeRect(0, 0, 480, 480);
-    for (var j = 0; j < 8; ++j) {
-        for (var i = 0; i < 4; ++i) {
-            ctx.fillRect((j + 1)%2*60 + i*120, 60*j, 60, 60);
+    
+    //1 means red; 2 means blue
+    var player = 1; //Whose turn it is
+    var clicked = 0; //Did someone click on his piece?
+    var whereClicked = [8,8]; //Where was it clicked?
+    var board = [[0,1,0,1,0,1,0,1],[1,0,1,0,1,0,1,0],[0,1,0,1,0,1,0,1],
+    [0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],
+    [2,0,2,0,2,0,2,0],[0,2,0,2,0,2,0,2],[2,0,2,0,2,0,2,0]];
+    
+    var drawPiece = function(color, size, line, column) {
+        ctx.fillStyle = color;        
+        ctx.beginPath();
+        ctx.arc(column * 60 + 30, line * 60 + 30, size, 0, 2 * Math.PI, false);
+        ctx.fill();     
+    }
+    
+    var drawPieces = function() {
+        for (var line = 0; line < 8; line++) {
+            for (var column = 0; column < 8; column++) {
+                if (board[line][column] == 1) //Red
+                    drawPiece("Red", 27, line, column);
+                else if (board[line][column] == 2) //Blue
+                    drawPiece("Blue", 27, line, column);               
+                else if (board[line][column] == 3) //Clicked red
+                    drawPiece("DarkRed", 27, line, column);                    
+                else if (board[line][column] == 4) //Clicked blue
+                    drawPiece("DarkBlue", 27, line, column);                 
+                else if (board[line][column] == 5) { //Red king    
+                    drawPiece("Yellow", 27, line, column);  
+                    drawPiece("Red", 20, line, column);
+                }
+                else if (board[line][column] == 6) { //Blue king    
+                    drawPiece("Yellow", 27, line, column);  
+                    drawPiece("Blue", 20, line, column);
+                }        
+                else if (board[line][column] == 7) { //Clicked red king    
+                    drawPiece("Yellow", 27, line, column);  
+                    drawPiece("DarkRed", 20, line, column);
+                }
+                else if (board[line][column] == 8) { //Clicked blue king   
+                    drawPiece("Yellow", 27, line, column);  
+                    drawPiece("DarkBlue", 20, line, column);
+                }        
+            }
         }
-    }
-    var red = [];
-    ctx.fillStyle = "Red";
-    for (var piece = 0; piece < 12; ++piece)
-    {
-        red.push([(piece - piece%4) / 4 + 1, (piece%4 + 1)*2 - ((piece - piece%4) / 4)%2, 0]);
-        ctx.beginPath();
-        ctx.arc(red[piece][1]*60 - 30, red[piece][0]*60 - 30, 27, 0, 2 * Math.PI, false);
-        ctx.fill();        
-    }
-    red.push([0, 0, 0]);
-    var blue = [];
-    ctx.fillStyle = "Blue";
-    for (var piece = 0; piece < 12; ++piece)
-    {
-        blue.push([5 + (piece - piece%4) / 4 + 1, (piece%4 + 1)*2 - (5 + (piece - piece%4) / 4)%2, 0]);
-        ctx.beginPath();
-        ctx.arc(blue[piece][1]*60 - 30, blue[piece][0]*60 - 30, 27, 0, 2 * Math.PI, false);
-        ctx.fill();      
-    }
-    blue.push([0, 0, 0]);
-    var player = 0;
-    var move = 0;
-    var moving = [];
-    var whatPiece;
-    var blank = function(where)
-    {
-        ctx.fillStyle = "Black";
-        ctx.beginPath();
-        ctx.arc(where[1]*60 - 30, where[0]*60 - 30, 30, 0, 2 * Math.PI, false);
-        ctx.fill(); 
-    }
-    var moveMe = function(from, to, color, whatPiece = 12)
-    {
-        blank(from);
-        if (color == "Red" && to[0] == 8)
-        {
-            red[whatPiece][2] = 1;
-            ctx.fillStyle = "Coral";
-        }
-        else if (color == "Blue" && to[0] == 1)
-        {
-            blue[whatPiece][2] = 1;
-            ctx.fillStyle = "CadetBlue";
-        }
-        else
-            ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(to[1]*60 - 30, to[0]*60 - 30, 27, 0, 2 * Math.PI, false);
-        ctx.fill();
+    };                
+    
+    var drawBoard = function() {
+        ctx.fillStyle = "Black"; 
         ctx.lineWidth = 4;
         ctx.strokeRect(0, 0, 480, 480);
-    }
-    var clicking = function(event)
-    {
-        var click = [];
-        click.push((event.pageY - event.pageY%60) / 60 + 1);
-        click.push((event.pageX - event.pageX%60) / 60 + 1);
-        if (move)
-        {
-            if (click[0] == moving[0] && click[1] == moving[1])
-            {
-                move = 0;
-                blank(moving);
-                var color;
-                if (player) color = "Blue"; else color = "Red";
-                moveMe(moving, moving, color);
-                return;
-                
+        for (var j = 0; j < 8; ++j) {
+            for (var i = 0; i < 4; ++i) {
+                ctx.fillRect((j + 1)%2*60 + i*120, 60*j, 60, 60);
             }
-            for (var piece = 0; piece < 12; piece++)
-            {
-                if (red[piece][0] == click[0] && red[piece][1] == click[1])
-                    return;
-                else if (blue[piece][0] == click[0] && blue[piece][1] == click[1])
-                    return; 
-            }            
-            if (player)
-            {
-                if (click[0] - moving[0] == -1)
-                {
-                    if (Math.abs(click[1] - moving[1]) == 1)
-                    {
-                        moveMe(moving, click, "Blue");
-                        player = 0;
-                        move = 0;
-                        blue[whatPiece] = click;
-                    }                        
-                }
-                else if (click[0] - moving[0] == -2)
-                {
-                    var doesRedExist = 0;
-                    var whatRedPiece;
-                    if (click[1] - moving[1] == -2)
-                    {
-                        for (var piece = 0; piece < 12; piece++)
-                        {
-                            if (red[piece][0] - moving[0] == -1 && red[piece][1] - moving[1] == -1)
-                            {
-                                doesRedExist = 1;
-                                whatRedPiece = piece;
-                            }
-                        }
-                    }
-                    else if  (click[1] - moving[1] == 2)
-                    {
-                        for (var piece = 0; piece < 12; piece++)
-                        {
-                            if (red[piece][0] - moving[0] == -1 && red[piece][1] - moving[1] == 1)
-                            {
-                                doesRedExist = 1;
-                                whatRedPiece = piece;
-                            }
-                        }
-                    }
-                    if (doesRedExist)
-                    {
-                        moveMe(moving, click, "Blue");
-                        blank(red[whatRedPiece]);
-                        player = 0;
-                        move = 0;
-                        blue[whatPiece] = click;
-                        red[whatRedPiece] = [0, 0];
-                    }
-                }
-            }            
+        }
+        drawPieces(board);
+    };
+    
+    var makeTheMove = function(line, column) {
+        if (line == whereClicked[0] && column == whereClicked[1]) {        
+            clicked = 0;
+            if (player == 1)
+                board[line][column] = 1;
             else
-            {
-                if (click[0] - moving[0] == 1)
-                {
-                    if (Math.abs(click[1] - moving[1]) == 1)
-                    {
-                        moveMe(moving, click, "Red");
-                        player = 1;
-                        move = 0;
-                        red[whatPiece] = click;
-                    }                        
-                }
-                else if (click[0] - moving[0] == 2)
-                {
-                    var doesBlueExist = 0;
-                    var whatBluePiece;
-                    if (click[1] - moving[1] == -2)
-                    {
-                        for (var piece = 0; piece < 12; piece++)
-                        {
-                            if (blue[piece][0] - moving[0] == 1 && blue[piece][1] - moving[1] == -1)
-                            {
-                                doesBlueExist = 1;
-                                whatBluePiece = piece;
-                            }
-                        }
-                    }
-                    else if  (click[1] - moving[1] == 2)
-                    {
-                        for (var piece = 0; piece < 12; piece++)
-                        {
-                            if (blue[piece][0] - moving[0] == 1 && blue[piece][1] - moving[1] == 1)
-                            {
-                                doesBlueExist = 1;
-                                whatBluePiece = piece;
-                            }
-                        }
-                    }
-                    if (doesBlueExist)
-                    {
-                        moveMe(moving, click, "Red");
-                        blank(blue[whatBluePiece]);
-                        player = 1;
-                        move = 0;
-                        red[whatPiece] = click;
-                        blue[whatBluePiece] = [0, 0];
-                    }
-                }
-            }           
+                board[line][column] = 2;
+            drawBoard();
         }
-        else
-        {     
-            var pieceExists = 0;
-            var canMove1 = 1;
-            var auxCanMove1 = 0;
-            for (var piece = 0; piece < 12; piece++)
-            {            
-                var varRed = [red[piece][0] - click[0], red[piece][1] - click[1]];
-                var varBlue = [blue[piece][0] - click[0], blue[piece][1] - click[1]];
-               
-                
-                if (!player)
-                {
-                    if (varRed[0] == 0 && varRed[1] == 0)
-                    {
-                        pieceExists = 1;
-                        whatPiece = piece;
-                    }
-                    else if (varRed[0] == 1 && Math.abs(varRed[1]) == 1)
-                        auxCanMove1++;
+        else if (player == 1) {
+            if (line - whereClicked[0] == 1 && Math.abs(column - whereClicked[1]) == 1) { //Fair move
+                if (board[line][column] == 0) {
+                    clicked = 0;
+                    board[line][column] = 1;
+                    board[whereClicked[0]][whereClicked[1]] = 0;
+                    drawBoard();
+                    player = 2;
                 }
-                
-                
-                if (player)
-                {
-                    if (varBlue[0] == 0 && varBlue[1] == 0)
-                    {
-                        pieceExists = 1;
-                        whatPiece  = piece;
-                    }
-                    else if (varBlue[0] == -1 && Math.abs(varBlue[1]) == 1)
-                        auxCanMove1++;
-                }
-                
-                
-                if (auxCanMove1 == 2)
-                    canMove1 = 0;                        
             }
-            if (pieceExists && canMove1) {
-                if (player)
-                {
-                    move = 1;
-                    moveMe(blue[whatPiece], blue[whatPiece], "DarkBlue");
-                    moving = blue[whatPiece];
+            else if (line - whereClicked[0] == 2 && Math.abs(column - whereClicked[1]) == 2) { //Maybe he's capturing
+                if (board[line - 1][(column + whereClicked[1])/2] == 2 || board[line - 1][(column + whereClicked[1])/2] == 6) { //Fair capture
+                    clicked = 0;
+                    board[line][column] = 1;
+                    board[whereClicked[0]][whereClicked[1]] = 0;
+                    board[line - 1][(column + whereClicked[1])/2] = 0;
+                    drawBoard();
+                    player = 2;
                 }
-                else
-                {
-                    move = 1;
-                    moveMe(red[whatPiece], red[whatPiece], "DarkRed");
-                    moving = red[whatPiece];
-                }                
+            }
+            if (!clicked && line == 7) { //There's a king
+                board[line][column] = 5;
+                drawBoard();
+            }                
+        }
+        else {
+            if (line - whereClicked[0] == -1 && Math.abs(column - whereClicked[1]) == 1) { //Fair move
+                if (board[line][column] == 0) {
+                    clicked = 0;
+                    board[line][column] = 2;
+                    board[whereClicked[0]][whereClicked[1]] = 0;
+                    drawBoard();
+                    player = 1;
+                }
+            }
+            else if (line - whereClicked[0] == -2 && Math.abs(column - whereClicked[1]) == 2) { //Maybe he's capturing
+                if (board[line + 1][(column + whereClicked[1])/2] == 1 || board[line + 1][(column + whereClicked[1])/2] == 5) { //Fair capture
+                    clicked = 0;
+                    board[line][column] = 2;
+                    board[whereClicked[0]][whereClicked[1]] = 0;
+                    board[line + 1][(column + whereClicked[1])/2] = 0;
+                    drawBoard();
+                    player = 1;
+                }
+            }
+            if (!clicked && line == 0) { //There's a king
+                board[line][column] = 6;
+                drawBoard();
+            }   
+        }
+    }
+    
+    var makeTheMoveOfKing = function(line, column) {
+        if (line == whereClicked[0] && column == whereClicked[1]) {        
+            clicked = 0;
+            if (player == 1)
+                board[line][column] = 5;
+            else
+                board[line][column] = 6;
+            drawBoard();
+        }
+        else if (player == 1) {
+            if (Math.abs(line - whereClicked[0]) == 1 && Math.abs(column - whereClicked[1]) == 1) { //Fair move
+                if (board[line][column] == 0) {
+                    clicked = 0;
+                    board[line][column] = 5;
+                    board[whereClicked[0]][whereClicked[1]] = 0;
+                    drawBoard();
+                    player = 2;
+                }
+            }
+            else if (Math.abs(line - whereClicked[0]) == 2 && Math.abs(column - whereClicked[1]) == 2) { //Maybe he's capturing
+                if (board[(line + whereClicked[0])/2][(column + whereClicked[1])/2] == 2 || board[(line + whereClicked[0])/2][(column + whereClicked[1])/2] == 6) { //Fair capture
+                    clicked = 0;
+                    board[line][column] = 5;
+                    board[whereClicked[0]][whereClicked[1]] = 0;
+                    board[(line + whereClicked[0])/2][(column + whereClicked[1])/2] = 0;
+                    drawBoard();
+                    player = 2;
+                }
+            }          
+        }
+        else {
+            if (Math.abs(line - whereClicked[0]) == 1 && Math.abs(column - whereClicked[1]) == 1) { //Fair move
+                if (board[line][column] == 0) {
+                    clicked = 0;
+                    board[line][column] = 6;
+                    board[whereClicked[0]][whereClicked[1]] = 0;
+                    drawBoard();
+                    player = 1;
+                }
+            }
+            else if (Math.abs(line - whereClicked[0]) == 2 && Math.abs(column - whereClicked[1]) == 2) { //Maybe he's capturing
+                if (board[(line + whereClicked[0])/2][(column + whereClicked[1])/2] == 1 || board[(line + whereClicked[0])/2][(column + whereClicked[1])/2] == 5) { //Fair capture
+                    clicked = 0;
+                    board[line][column] = 6;
+                    board[whereClicked[0]][whereClicked[1]] = 0;
+                    board[(line + whereClicked[0])/2][(column + whereClicked[1])/2] = 0;
+                    drawBoard();
+                    player = 1;
+                }
             }
         }
     }
+    
+    var clicking = function(event) {
+        var line = (event.pageY - event.pageY%60) / 60;
+        var column = (event.pageX - event.pageX%60) / 60;
+        if (!clicked && player == 1 && board[line][column] == 1) { //If red player clicks in his piece
+            clicked = 1;
+            whereClicked = [line, column];
+            board[line][column] = 3; //Change it's color
+            drawBoard();
+        }
+        else if (!clicked && player == 2 && board[line][column] == 2) { //If blue player clicks in his piece
+            clicked = 1;
+            whereClicked = [line, column];
+            board[line][column] = 4; //Change it's color
+            drawBoard();
+        }
+        else if (!clicked && player == 1 && board[line][column] == 5) { //If red player clicks in his king
+            clicked = 1;
+            whereClicked = [line, column];
+            board[line][column] = 7; //Change it's color
+            drawBoard();
+        }
+        else if (!clicked && player == 2 && board[line][column] == 6) { //If blue player clicks in his piece
+            clicked = 1;
+            whereClicked = [line, column];
+            board[line][column] = 8; //Change it's color
+            drawBoard();
+        }
+        else if (clicked) {
+            if (board[whereClicked[0]][whereClicked[1]] == 3 || board[whereClicked[0]][whereClicked[1]] == 4)
+                makeTheMove(line, column);
+            else
+                makeTheMoveOfKing(line, column);
+        }            
+    };
+    
+    drawBoard(board);
+      
     $("canvas").click(clicking);
 </script>
 </body>
