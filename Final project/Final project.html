@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> Projeto final de Introdução à Computação Gráfica </title>
+</head>
+<body>
+	<h1>Técnicas de processamento gráfico para a redução de ruído de imagens</h1>
+	    <h3>Lucas Emanuel Resck Domingues</h3>
+	    <h2>Introdução</h2> 
+	        <p>Ruído é uma variação aleatória na informação da imagem. Geralmente é indesejável, pois omite a informação presente na imagem e, esteticamente, é desagradável. Ruídos podem surgir em uma imagem por diversos motivos: baixa iluminação, temperatura do sensor de imagem, circuito eletrônico, conversão analógico-digital, erros de transmissão, quantização etc. Nesse sentido, foram desenvolvidos muitos algoritmos para a redução de ruído. O objetivo, portanto, deste trabalho é implementar alguns deles, a fim de verificar seu funcionamento.
+	    <h2>Metodologia</h2>
+	        <p>Realizarei a implementação de três filtros: filtro pela mediana, filtro pela média e filtro gaussiano (<i>Gaussian blur</i>). Todo o processamento de imagem será realizado em <i>Jupyter Notebook</i> (<i>Google Colaboratory</i>) na linguagem <i>Python</i>, devido às vantagens didáticas e de implementação. Foram utilizadas as bibliotecas <i>OpenCV</i> para <i>Python</i>, para a leitura e redimensionamento das imagens, e a biblioteca <i>NumPy</i>, para o cálculo e o manuseamento das informações das imagens. O código da implementação pode ser encontrado no notebook <i>Final project.ipynb</i>.</p>
+	        <p>A ideia é, a partir de uma imagem, criar uma nova imagem baseada na anterior, a partir das características de cada pixel. Foram testadas várias imagens com os vários filtros implementados.</p>
+	        <p>Neste trabalho, os filtros trabalham com a intensidade de cor na escala de cinza (para imagens em preto e branco) e a intensidade de cor em cada canal de cor da escala RGB (para imagens coloridas). Além disso, os filtros lidam com a ideia de vizinhança: a vizinhança de um pixel pode ser definida como o conjunto de pixels que contém ele mesmo e que contém os pixels que estão em volta dele. Aqui, considerarei uma vizinhança quadrada.
+	        <h3>Filtro pela mediana</h3>
+	            <p>Dada uma imagem, o filtro pela mediana cria uma nova imagem em que o valor de cada pixel é a mediana dos valores da vizinhança do pixel correspondente na imagem original, sendo este valor alguma característica do pixel. Se a imagem está em preto e branco, basta atribuir a cada pixel da nova imagem a mediana das intensidades de cinza dos pixels da vizinhança do pixel correspondente. Já se a imagem for colorida, esse mesmo processo é realizado em cada canal de cor separadamente.</p>
+	            <p>Um problema muito comum nesse tipo de implementação está em como lidar com as bordas e os cantos da imagem, pois as vizinhanças desses pixels são menores. Minha solução foi realizar a mediana desses conjuntos limitados, nesses casos. Este é um exemplo da implementação para uma imagem preto e branco, em que <i>height</i> e <i>width</i> são as medidas da imagem, <i>r</i> indica quantos pixels para cada direção farão parte da vizinhança (<i>r=1</i> indica 1 pixel acima, 1 abaixo etc., totalizando um quadrado de 9 pixels) e <i>neighbours</i> é a matriz da vizinhança:</p>
+	            <pre>
+img2 = np.zeros((height, width))
+for h in range(0, height):
+    for w in range(0, width):
+        neighbours = img[np.maximum(0, h-r):np.minimum(h+r+1, height-1), np.maximum(0, w-r):np.minimum(w+r+1, width-1)]
+        img2[h][w] = np.median(neighbours)
+                </pre>
+                <p>Ou seja, inicio uma imagem com zeros, e, para cada pixel da imagem <i>img</i>, calculo a matriz da vizinhança e atribuo a mediana desses valores ao pixel correspondente na nova imagem. Observe que no cálculo da matriz de vizinhança já lido com o problema das bordas, selecionando apenas uma matriz dentro da imagem.</p>
+            <h3>Filtro pela média</h3>
+                <p>De maneira semelhante ao método anterior, cada pixel da nova imagem criada é uma média aritmética dos pixels da vizinhança do pixel correspondente. Os processos para a construção das imagens em preto e branco e coloridas são análogos. Assim também é a solução para o problema das bordas e cantos.</p>
+                <p>Segue um exemplo de implementação do filtro pela média, porém agora para imagens coloridas:</p>
+                <pre>
+        red = img[:,:,0]
+        green = img[:,:,1]
+        blue = img[:,:,2]
+        img2 = np.zeros((height, width, 3))
+        for h in range(0, height):
+            for w in range(0, width):
+                red_neighbours = red[np.maximum(0, h-r):1+np.minimum(h+r, height-1), np.maximum(0, w-r):1+np.minimum(w+r, width-1)]
+                img2[h][w][0] = np.mean(red_neighbours)
+                green_neighbours = green[np.maximum(0, h-r):1+np.minimum(h+r, height-1), np.maximum(0, w-r):1+np.minimum(w+r, width-1)]
+                img2[h][w][1] = np.mean(green_neighbours)
+                blue_neighbours = blue[np.maximum(0, h-r):1+np.minimum(h+r, height-1), np.maximum(0, w-r):1+np.minimum(w+r, width-1)]
+                img2[h][w][2] = np.mean(blue_neighbours)
+                </pre>
+                <p>Separo a imagem <i>img</i> em RGB, inicializo uma imagem com três canais de cor preenchidos de zeros e realizo um processo análogo ao do filtro pela mediana em cada canal de cor.
+            <h3>Filtro gaussiano</h3>
+                <p>O filtro gaussiano, também conhecido como <i>Gaussian blur</i>, trabalha de maneira parecida com o filtro pela média, porém, ao invés de realizar uma média aritmética, esta é ponderada com pesos dados pela função gaussiana.</p>
+                <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+                <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+                <p><span class="math display">\[f(x) = \dfrac{1}{\sigma\sqrt{2\pi}} \exp{-\left[\dfrac{(x-\mu)^2}{2\sigma^2}\right]}\]</span></p>
+                <p>Quando é realizado o cálculo do valor de um pixel na nova imagem, \(x\) representa a "distância" de um pixel pertencente à vizinhança em relação a esse pixel. \(\sigma\) é o desvio padrão, que controla a intensidade do filtro. \(\mu\) é a média da função gaussiana; queremos \(\mu=0\). A unidade de medida considerada é o pixel. O cálculo é feito unidimensionalmente, uma vez em cada uma das duas dimensões da imagem. Ou seja, gera-se uma imagem a partir de um cálculo unidimensional e aplica-se o processo novamente.</p>
+                <p>Teoricamente, ao realizar o cálculo do novo valor de um pixel, deveríamos considerar todos os pixels da imagem, pois a função gaussiana nunca tem valor zero. Porém, a partir de três desvios padrão, o valor da função já é praticamente irrelevante. Assim, vizinhança considerada é apenas aquela até três desvios padrão.</p>
+                <p>Segue um exemplo de como calcular os pesos para o cálculo do valor do novo pixel:</p>
+                <pre>
+    r = int(3*np.ceil(sig))
+    kernel = np.zeros(2*r + 1)
+    N = len(kernel)
+    for n in range(N):
+        x = (n + 0.5) - N/2 
+        kernel[n] = gaussian(x,0,sig)
+    kernel = kernel/np.sum(kernel)
+                </pre>
+                <p>Inicializamos um <i>array</i> com zeros, de tamanho \(1 + 2*3\sigma\) pixels, ou seja, três desvios para cada lado. Para cada elemento desse <i>array</i>, calculamos a gaussiana da distância desse elemento ao "centro" do <i>array</i>. Ao final, o <i>array</i> é normalizado, para não aumentar a soma das intensidades.
+                <p>Neste filtro, a vizinhança é unidimensional e o processo é realizado duas vezes, uma em cada direção, sendo isso realizado em cada canal de cor, se a imagem é colorida. Para lidar com o problema da borda, minha solução foi trabalhar com a vizinhança limitada, como nos outros filtros, porém todos os pesos normalizados novamente.</p>
+        <h2>Resultados</h2>
+            <h3>Ruído <i>salt-and-pepper</i> em imagem em preto e branco</h3>
+                <p>Clique na imagem!</p>
+	            <figure>
+	                <canvas id="sap" width="690" height="458"></canvas>
+	                <figcaption>
+	                    Fonte: <a href = "https://upload.wikimedia.org/wikipedia/commons/f/f4/Noise_salt_and_pepper.png"> Wikimedia </a>
+                </figure>
+            <h3>Ruído <i>salt-and-pepper</i> em imagem colorida</h3>
+	            <figure>
+	                <canvas id="saprgb" width="850" height="330"></canvas>
+                </figure>
+                
+    <script>
+        //Ruído <i>salt-and-pepper</i> em imagem em preto e branco
+        var canvasSap = document.getElementById("sap");
+        var ctxSap = canvasSap.getContext("2d");
+        ctxSap.font = "16px Times New Roman";
+        
+        var sap = [];
+        sapi = 0;
+        sap[0] = "img/Salt-and-pepper noise.png";
+        sap[1] = "img/Salt-and-pepper noise - median filter.png";
+        sap[2] = "img/Salt-and-pepper noise - mean filter (r = 1).png";
+        sap[3] = "img/Salt-and-pepper noise - mean filter (r = 2).png";
+        sap[4] = "img/Salt-and-pepper noise - Gaussian blur (sig = 1).png";
+        sap[5] = "img/Salt-and-pepper noise - Gaussian blur (sig = 2).png";
+        var sapText = []
+        sapText[0] = "Imagem em preto e branco e ruído salt-and-pepper";
+        sapText[1] = "Filtro pela mediana";
+        sapText[2] = "Filtro pela média com r = 1";
+        sapText[3] = "Filtro pela média com r = 2";
+        sapText[4] = "Filtro gaussiano com sigma = 1";
+        sapText[5] = "Filtro gaussiano com sigma = 2";
+        var sapimg = new Image();
+        sapimg.onload = function() {
+            ctxSap.drawImage(sapimg, 0, 0);
+            ctxSap.fillText(sapText[sapi], 0, 448);
+            sapi += 1;
+        }
+        sapimg.src = sap[sapi];
+        
+        canvasSap.addEventListener("click", function() {
+            var img = new Image();
+            img.onload = function() {
+                ctxSap.clearRect(370, 428, 320, 30);
+                ctxSap.drawImage(img, 370, 0);
+                ctxSap.fillText(sapText[sapi], 370, 448);   
+                sapi += 1;
+                if (sapi == 6) sapi = 1;
+            }
+            img.src = sap[sapi]
+        });
+        
+        //Ruído <i>salt-and-pepper</i> em imagem colorida
+        var canvasSaprgb = document.getElementById("saprgb");
+        var ctxSaprgb = canvasSaprgb.getContext("2d");
+        ctxSaprgb.font = "16px Times New Roman";
+        
+        var saprgb = [];
+        saprgbi = 0;
+        saprgb[0] = "img/Salt-and-pepper noise (2).png";
+        saprgb[1] = "img/Salt-and-pepper noise (2) - median filter.png";
+        saprgb[2] = "img/Salt-and-pepper noise (2) - mean filter (r = 1).png";
+        saprgb[3] = "img/Salt-and-pepper noise (2) - mean filter (r = 2).png";
+        saprgb[4] = "img/Salt-and-pepper noise (2) - Gaussian blur (sig = 1).png";
+        saprgb[5] = "img/Salt-and-pepper noise (2) - Gaussian blur (sig = 2).png";
+        var saprgbText = []
+        saprgbText[0] = "Imagem colorida e ruído salt-and-pepper";
+        saprgbText[1] = "Filtro pela mediana";
+        saprgbText[2] = "Filtro pela média com r = 1";
+        saprgbText[3] = "Filtro pela média com r = 2";
+        saprgbText[4] = "Filtro gaussiano com sigma = 1";
+        saprgbText[5] = "Filtro gaussiano com sigma = 2";
+        var saprgbimg = new Image();
+        saprgbimg.onload = function() {
+            ctxSaprgb.drawImage(saprgbimg, 0, 0);
+            ctxSaprgb.fillText(saprgbText[saprgbi], 0, 320);
+            saprgbi += 1;
+        }
+        saprgbimg.src = saprgb[saprgbi];
+        
+        canvasSaprgb.addEventListener("click", function() {
+            var img = new Image();
+            img.onload = function() {
+                ctxSaprgb.clearRect(450, 300, 400, 30);
+                ctxSaprgb.drawImage(img, 450, 0);
+                ctxSaprgb.fillText(saprgbText[saprgbi], 450, 320);   
+                saprgbi += 1;
+                if (saprgbi == 6) saprgbi = 1;
+            }
+            img.src = saprgb[saprgbi]
+        });
+    </script>
+</body>
+</html>
