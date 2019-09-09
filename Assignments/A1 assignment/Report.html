@@ -2,21 +2,21 @@
 <html>
 <head>
 	<center>
-	    <title> Projeto final de Introdução à Computação Gráfica </title>
+	    <title>Trabalho para a A1 da disciplina Introdução à Computação Gráfica</title>
     </center>
 </head>
 <body>
     <center>
 	    <h1>Técnicas de processamento gráfico para a redução de ruído em imagens</h1>
+	        <h3>Trabalho para a A1 da disciplina Introdução à Computação Gráfica</h3>
 	        <h3>Lucas Emanuel Resck Domingues</h3>
-	        <h3>Introdução à Computação Gráfica</h3>
     </center>
         <h2>Justificativa</h2>
-            <p align="justify">A disciplina Introdução à Computação Gráfica, da Escola de Matemática Aplicada da Fundação Getulio Vargas, tem como parte da sua ementa técnicas de processamento de imagens. Além disso, ela tem como método de avaliação a entrega de um projeto final. Tendo isso em vista, e sabendo da disponibilidade deste tema,</p>
+            <p align="justify">A Computação Gráfica é um ramo da ciência que se desenvolveu muito nas últimas décadas, devido à demanda por conteúdos audiovisuais e pelo próprio avanço da Computação. Sabendo disso, o curso de Matemática Aplicada da Fundação Getulio Vargas ofereceu, no segundo semestre de 2019, a disciplina Introdução à Computação Gráfica, que, por sua vez, tem como parte da sua ementa técnicas de processamento de imagens. Além disso, o método de avaliação se dá por entrega de trabalhos. Sendo assim, técnicas de processamento de imagens se configuram um ótimo tema de projeto.</p>
 	    <h2>Introdução</h2> 
-	        <p align="justify">Ruído é uma variação aleatória na informação da imagem. Geralmente é indesejável, pois omite a informação presente na imagem e, esteticamente, é desagradável. Ruídos podem surgir em uma imagem por diversos motivos: baixa iluminação, temperatura do sensor de imagem, circuito eletrônico, conversão analógico-digital, erros de transmissão, quantização etc. Nesse sentido, foram desenvolvidos muitos algoritmos para a redução de ruído. O objetivo, portanto, deste trabalho é implementar alguns deles, a fim de verificar seu funcionamento.</p>
+	        <p align="justify">Uma imagem digital é um conjunto de vários pixels, cada um carregando informação. Ruído é uma variação aleatória na informação desses pixels. Geralmente é indesejável, pois omite a informação que a imagem pretende apresentar e, esteticamente, é desagradável. Ruídos podem surgir em uma imagem por diversos motivos: baixa iluminação, temperatura do sensor de imagem, circuito eletrônico, conversão analógico-digital, erros de transmissão, quantização etc. Nesse sentido, foram desenvolvidos muitos algoritmos para a redução de ruído. O objetivo, portanto, deste trabalho é implementar alguns deles, a fim de compará-los e verificar seu funcionamento.</p>
 	    <h2>Metodologia</h2>
-	        <p align="justify">Realizarei a implementação de três filtros: filtro pela mediana, filtro pela média e filtro gaussiano (<i>Gaussian blur</i>). Todo o processamento de imagem será realizado em <i>Jupyter Notebook</i> (<i>Google Colaboratory</i>) na linguagem <i>Python</i>, devido às vantagens didáticas e de implementação. Foram utilizadas as bibliotecas <i>OpenCV</i> para <i>Python</i>, para a leitura e redimensionamento das imagens, e a biblioteca <i>NumPy</i>, para o cálculo e o manuseamento das informações das imagens. O código da implementação pode ser encontrado no notebook <i>Final project.ipynb</i>.</p>
+	        <p align="justify">Realizarei a implementação de três filtros: filtro pela mediana, filtro pela média e filtro gaussiano (<i>Gaussian blur</i>). Todo o processamento de imagem será realizado em <i>Jupyter Notebook</i> (<i>Google Colaboratory</i>) na linguagem <i>Python</i>, devido às vantagens didáticas e de implementação. Foram utilizadas as bibliotecas <i>OpenCV</i> para <i>Python</i>, para a leitura e redimensionamento das imagens, e a biblioteca <i>NumPy</i>, para o cálculo e o manuseamento das informações das imagens. O código da implementação pode ser encontrado no notebook <i>A1 assignment.ipynb</i>.</p>
 	        <p align="justify">A ideia é, a partir de uma imagem, criar uma nova imagem baseada na anterior, a partir das características de cada pixel. Foram testadas várias imagens nos formatos JPEG e PNG com os filtros implementados.</p>
 	        <p align="justify">Neste trabalho, os filtros trabalham com a intensidade de cor na escala de cinza (para imagens em preto e branco) e a intensidade de cor em cada canal de cor da escala RGB (para imagens coloridas). Além disso, os filtros lidam com a ideia de vizinhança: a vizinhança de um pixel pode ser definida como o conjunto de pixels que contém ele mesmo e que contém os pixels que estão em volta dele. Aqui, considerarei uma vizinhança quadrada.</p>
 	        <p align="justify">Um tipo de ruído que será explorado neste trabalho será o <i>salt-and-pepper</i>: vários pixels da imagem se tornam aleatoriamente brancos ou pretos. Esse ruído é interessante pois, além de ser facilmente reproduzido, também é relativamente fácil de reobter a informação escondida.</p>
@@ -96,7 +96,7 @@ for h in range(0, height):
                 </center>
         <h2>Conclusão</h2>
             <p align="justify">Os resultados demonstram a funcionalidade dos filtros, tanto para a redução de ruído, quanto para um efeito borrão (<i>blur</i>) na imagem.</p>
-            <p align="justify">Nas figuras com ruído tipo <i>salt-and-pepper</i>, o filtro pela mediana se sai muito bem, na verdade a melhor das técnicas apresentadas. Em seguida, o filtro gaussiano se mostra promissor. Uma hipótese razoável para isso é que, nesse tipo de ruído, são inseridos pixels com intensidades extremas (branco e preto), de modo que a intensidade original do pixel, que é próxima às dos seus vizinhos, é aproximadamente capturada pela mediana. O filtro pela média, por sua vez, não captura o valor real de algum dos vizinhos, mas uma média de todos eles, média esta afetada pela inserção do ruído. Pixels que são claros (e seus vizinhos também o são), tendem a escurecer, e vice-versa. O mesmo parece ocorrer com o filtro gaussiano, porém com menor intensidade.</p>
+            <p align="justify">Nas figuras com ruído tipo <i>salt-and-pepper</i>, o filtro pela mediana se sai muito bem, na verdade a melhor das técnicas apresentadas. Em seguida, o filtro gaussiano se mostra promissor. Uma hipótese razoável para isso é que, nesse tipo de ruído, são inseridos pixels com intensidades extremas (branco e preto), de modo que a intensidade original do pixel, que é próxima às dos seus vizinhos, é aproximadamente capturada pela mediana. O filtro pela média, por sua vez, não captura o valor real de algum dos vizinhos, mas uma média de todos eles, média esta afetada pela inserção do ruído. Pixels que são claros (e seus vizinhos também o são), tendem a escurecer, e vice-versa. O mesmo parece ocorrer com o filtro gaussiano, afinal ele é uma média ponderada dos pixels vizinhos.</p>
             <p align="justify"></p>
         <h2>Referências bibliográficas</h2>
                 
