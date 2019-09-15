@@ -94,9 +94,20 @@ for h in range(0, height):
 	                    </figcaption>
                     </figure>
                 </center>
+            <h3>Ruído de quantização em imagem colorida</h3>
+                <p align="justify">Esse tipo de ruído aparece quando se deseja quantizar, ou seja, reduzir a resolução de cor, de uma imagem. A imagem abaixo foi quantizada uniformemente para 256 cores.
+                <center>
+	                <figure>
+	                    <canvas id="quantrgb" width="850" height="297"></canvas>
+	                    <figcaption>
+	                        Fonte: <a href = "https://www.visgraf.impa.br/Projects/quantization/figs/ararasuni256.jpg"> Impa </a>
+	                    </figcaption>
+                    </figure>
+                </center>
         <h2>Conclusão</h2>
             <p align="justify">Os resultados demonstram a funcionalidade dos filtros, tanto para a redução de ruído, quanto para um efeito borrão (<i>blur</i>) na imagem.</p>
             <p align="justify">Nas figuras com ruído tipo <i>salt-and-pepper</i>, o filtro pela mediana se sai muito bem, na verdade a melhor das técnicas apresentadas. Em seguida, o filtro gaussiano se mostra promissor. Uma hipótese razoável para isso é que, nesse tipo de ruído, são inseridos pixels com intensidades extremas (branco e preto), de modo que a intensidade original do pixel, que é próxima às dos seus vizinhos, é aproximadamente capturada pela mediana. O filtro pela média, por sua vez, não captura o valor real de algum dos vizinhos, mas uma média de todos eles, média esta afetada pela inserção do ruído. Pixels que são claros (e seus vizinhos também o são), tendem a escurecer, e vice-versa. O mesmo parece ocorrer com o filtro gaussiano, afinal ele é uma média ponderada dos pixels vizinhos.</p>
+            <p align="justify">Na imagem granulada, temos um resultado razoável para todos os tipos de filtros. Já na imagem quantizada, conseguimos um efeito desejável, que é diminuir a "discretização" da imagem, muito visível originalmente. Porém, com isso perdemos bastante nitidez e informação na figura.</p>
             <p align="justify"></p>
         <h2>Referências bibliográficas</h2>
                 
@@ -226,13 +237,59 @@ for h in range(0, height):
             var img = new Image();
             img.onload = function() {
                 ctxGranrgb.clearRect(450, 400*img.width/img.height, 400, 30);
-                ctxGranrgb.drawImage(img, 450, 0, 400, 400*img.width/img.height);
+                ctxGranrgb.drawImage(img, 450, 0, 400, 400*img.height/img.width);
                 img = null;
                 ctxGranrgb.fillText(granrgbText[granrgbi], 450, 420);   
                 granrgbi += 1;
                 if (granrgbi == 7) granrgbi = 1;
             }
             img.src = granrgb[granrgbi]
+        });
+        
+        //Quantização em imagem colorida
+        var canvasQuantrgb = document.getElementById("quantrgb");
+        var ctxQuantrgb = canvasQuantrgb.getContext("2d");
+        ctxQuantrgb.font = "16px Times New Roman";
+        
+        var quantrgb = [];
+        quantrgbi = 0;
+        quantrgb[0] = "img/Quantization noise.jpg";
+        quantrgb[1] = "img/Quantization noise - median filter (r = 1).png";
+        quantrgb[2] = "img/Quantization noise - median filter (r = 2).png";
+        quantrgb[3] = "img/Quantization noise - mean filter (r = 1).png";
+        quantrgb[4] = "img/Quantization noise - mean filter (r = 2).png";
+        quantrgb[5] = "img/Quantization noise - Gaussian blur (sig = 1).png";
+        quantrgb[6] = "img/Quantization noise - Gaussian blur (sig = 2).png";
+        
+        var quantrgbText = []
+        quantrgbText[0] = "Imagem colorida e quantização";
+        quantrgbText[1] = "Filtro pela mediana com r = 1";
+        quantrgbText[2] = "Filtro pela mediana com r = 2";
+        quantrgbText[3] = "Filtro pela média com r = 1";
+        quantrgbText[4] = "Filtro pela média com r = 2";
+        quantrgbText[5] = "Filtro gaussiano com sigma = 1";
+        quantrgbText[6] = "Filtro gaussiano com sigma = 2";
+        
+        var quantrgbimg = new Image();
+        quantrgbimg.onload = function() {
+            ctxQuantrgb.drawImage(quantrgbimg, 0, 0, 400, 400*quantrgbimg.height/quantrgbimg.width);
+            quantrgbimg = null;
+            ctxQuantrgb.fillText(quantrgbText[quantrgbi], 0, 287);
+            quantrgbi += 1;
+        }
+        quantrgbimg.src = quantrgb[quantrgbi];
+        
+        canvasQuantrgb.addEventListener("click", function() {
+            var img = new Image();
+            img.onload = function() {
+                ctxQuantrgb.clearRect(450, 400*img.height/img.width, 400, 30);
+                ctxQuantrgb.drawImage(img, 450, 0, 400, 400*img.height/img.width);
+                img = null;
+                ctxQuantrgb.fillText(quantrgbText[quantrgbi], 450, 287);   
+                quantrgbi += 1;
+                if (quantrgbi == 7) quantrgbi = 1;
+            }
+            img.src = quantrgb[quantrgbi]
         });
     </script>
 </body>
