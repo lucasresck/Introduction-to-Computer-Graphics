@@ -1,9 +1,13 @@
 var P = [];
 var PColors = [];
-var mouseLeftWasPressed = 0;
+var dist = [];
+var N;
+var i = 0;
 
 function setup() {
     var cnv = createCanvas(windowWidth, windowHeight);
+    frameRate(60);
+    background('GhostWhite');
 }
 
 function bjn(j, n, t) {
@@ -22,13 +26,6 @@ function bn(t, P) {
 }
 
 function bezierCurve(P) {
-    var dist = [0, 0];
-    for (var i = 0; i < P.length - 1; i++) {
-        dist[0] += Math.abs(P[i][0] - P[i + 1][0]);
-        dist[1] += Math.abs(P[i][1] - P[i + 1][1]);
-    }
-    N = dist[0] + dist[1];
-    if (N > 5000) N = 5000;
     for (var i = 0; i < N; i++) {
         var t = i/N;
         var Bn = bn(t, P);
@@ -39,31 +36,53 @@ function bezierCurve(P) {
 function keyPressed() {
     if (key == ' ') {
         clear();
+        background('GhostWhite');    
         P = [];
     }
 }
 
-function draw() {
-    if (mouseIsPressed && mouseButton == LEFT && !mouseLeftWasPressed) {
+function mousePressed() {
+    if (mouseButton == LEFT) {
+        i = 0;
         P.push([mouseX, mouseY]);
         pointColor = random(['red', 'blue', 'green']);
         PColors.push(pointColor);
         
         clear();
-        if (P.length > 0) {
-            stroke('black');
-            fill('black');
-            bezierCurve(P);
-        }
+        background('GhostWhite');
+        
         for (var p = 0; p < P.length; p++) {
             stroke(PColors[p]);
             fill(PColors[p]);
             ellipse(P[p][0], P[p][1], 8);
         }
-         
-        mouseLeftWasPressed = 1;
+        
+        dist = [0, 0];
+        for (var j = 0; j < P.length - 1; j++) {
+            dist[0] += Math.abs(P[j][0] - P[j + 1][0]);
+            dist[1] += Math.abs(P[j][1] - P[j + 1][1]);
         }
-    else if (!mouseIsPressed && mouseLeftWasPressed) {
-        mouseLeftWasPressed = 0;
+        N = dist[0] + dist[1];
+        if (N > 10000) N = 10000;
+    }
+    return false;
+}
+
+function draw() {  
+    if (i < N) {
+        for (var j = 0; j < N/60 && i < N; j++) {
+            console.log(N);
+            var t = i/N;
+            var Bn = bn(t, P);
+            stroke('black');
+            fill('black');            
+            ellipse(Bn[0], Bn[1], 1, 1);
+            i++;
+        }
+    }    
+    for (var p = 0; p < P.length; p++) {
+        stroke(PColors[p]);
+        fill(PColors[p]);
+        ellipse(P[p][0], P[p][1], 8);
     }
 }
