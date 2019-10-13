@@ -1,5 +1,10 @@
 var P = [];
-var mouseWasPressed = 0;
+var PColors = [];
+var mouseLeftWasPressed = 0;
+
+function setup() {
+    var cnv = createCanvas(windowWidth, windowHeight);
+}
 
 function bjn(j, n, t) {
     return math.combinations(n, j) * Math.pow(t, j) * Math.pow(1 - t, n - j);
@@ -17,9 +22,13 @@ function bn(t, P) {
 }
 
 function bezierCurve(P) {
-    var N = P.reduce((a, b) => [a[0] + b[0], a[1] + b[1]], [0, 0]);
-    N = N[0] + N[1];
-    N *= 2;
+    var dist = [0, 0];
+    for (var i = 0; i < P.length - 1; i++) {
+        dist[0] += Math.abs(P[i][0] - P[i + 1][0]);
+        dist[1] += Math.abs(P[i][1] - P[i + 1][1]);
+    }
+    N = dist[0] + dist[1];
+    if (N > 5000) N = 5000;
     for (var i = 0; i < N; i++) {
         var t = i/N;
         var Bn = bn(t, P);
@@ -27,35 +36,34 @@ function bezierCurve(P) {
     }
 }
 
-function setup() {
-    createCanvas(window.innerWidth, window.innerHeight);
+function keyPressed() {
+    if (key == ' ') {
+        clear();
+        P = [];
+    }
 }
 
 function draw() {
-    if (mouseIsPressed && !mouseWasPressed) {
-        if (mouseButton == LEFT) {
-            P.push([mouseX, mouseY]);
-            
-            clear();
-            if (P.length > 0) {
-                stroke('black');
-                fill('black');
-                bezierCurve(P);
-            }
-            stroke('red');
-            fill('red');
-            for (var p = 0; p < P.length; p++) {
-                ellipse(P[p][0], P[p][1], 8);
-            }            
+    if (mouseIsPressed && mouseButton == LEFT && !mouseLeftWasPressed) {
+        P.push([mouseX, mouseY]);
+        pointColor = random(['red', 'blue', 'green']);
+        PColors.push(pointColor);
+        
+        clear();
+        if (P.length > 0) {
+            stroke('black');
+            fill('black');
+            bezierCurve(P);
         }
-        else {
-            P = [];
-            clear();
+        for (var p = 0; p < P.length; p++) {
+            stroke(PColors[p]);
+            fill(PColors[p]);
+            ellipse(P[p][0], P[p][1], 8);
         }
-        mouseWasPressed = 1;
+         
+        mouseLeftWasPressed = 1;
+        }
+    else if (!mouseIsPressed && mouseLeftWasPressed) {
+        mouseLeftWasPressed = 0;
     }
-    else if (!mouseIsPressed && mouseWasPressed) {
-        mouseWasPressed = 0;
-    }
-    
 }
