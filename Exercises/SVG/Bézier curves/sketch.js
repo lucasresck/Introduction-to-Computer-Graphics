@@ -1,40 +1,61 @@
-//var dist = [];
-//var N;
-//var i = 0;
-
 function bjn(j, n, t) {
     return math.combinations(n, j) * Math.pow(t, j) * Math.pow(1 - t, n - j);
 }
 
-function bn(t, P) {
-    var n = P.length - 1;
+function bn(t) {
+    var n = nPoints - 1;
     var sum = [0, 0]
     for (var j = 0; j <= n; j++) {
         var Bjn = bjn(j, n, t);
-        sum[0] += P[j][0] * Bjn;
-        sum[1] += P[j][1] * Bjn;        
+        point = svg.getElementById('point-'+j);
+        sum[0] += point.getAttributeNS(null, 'cx') * Bjn;
+        sum[1] += point.getAttributeNS(null, 'cy') * Bjn;
     }
     return sum;
 }
 
-function bezierCurve(P) {
-    for (var i = 0; i < N; i++) {
-        var t = i/N;
-        var Bn = bn(t, P);
-        ellipse(Bn[0], Bn[1], 1, 1);
+function clearLines() {
+    for (var j = 0; j < nLines; j++) {
+        var line = document.getElementById('line-' + j);
+        svg.removeChild(line);
     }
+    nLines = 0;
 }
 
-function keyPressed() {
-    if (key == ' ') {
-        clear();
-        background('GhostWhite');    
-        P = [];
+function clearPoints() {
+    for (var j = 0; j < nPoints; j++) {
+        var point = document.getElementById('point-' + j);
+        svg.removeChild(point);
+    }
+    nPoints = 0;
+}
+
+function keyPressed(event) {
+    if (event.key == ' ') {
+        clearPoints();
+        clearLines();
     }
 }
 
 function drawCurve() {
-    
+    if (nPoints >= 2) {
+        for (var j = 0; j < N/100 && i < N; j++) {
+            var t = i/N;
+            var Bn = bn(t);
+            var line = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            line.setAttributeNS(null, 'cx', Bn[0]);
+            line.setAttributeNS(null, 'cy', Bn[1]);
+            line.setAttributeNS(null, 'fill', 'black');
+            line.setAttributeNS(null, 'r', 1);
+            line.setAttributeNS(null, 'id', 'line-' + i);
+            svg.appendChild(line);
+            nLines++;
+            i++;
+        }
+        if (i < N) {
+            setTimeout(drawCurve, 10);
+        }
+    }
 }
 
 function randomChoice() {
@@ -46,70 +67,47 @@ function randomChoice() {
     return color;
 }
 
-function mousePressed2(event) {
+function mousePressed(event) {
     if (event.button == 0) {
+        i = 0;
+        
+        clearLines();
+        
         var point = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        nPoints++;
         point.setAttributeNS(null, 'cx', event.pageX - offsetLeft);
         point.setAttributeNS(null, 'cy', event.pageY - offsetTop);
         point.setAttributeNS(null, 'fill', randomChoice());
         point.setAttributeNS(null, 'r', 5);
         point.setAttributeNS(null, 'id', 'point-' + nPoints);
         svg.appendChild(point);
-    }
-    /*
-        i = 0;
-        P.push([mouseX, mouseY]);
-        pointColor = random(['red', 'blue', 'green']);
-        PColors.push(pointColor);
+        var point = document.getElementById('point-' + nPoints);
+        console.log(point);
+        nPoints++;
         
-        clear();
-        background('GhostWhite');
-        
-        if (P.length == 4) {
-            noFill();
-            stroke('Grey');
-            bezier(P[0][0], P[0][1], P[1][0], P[1][1], P[2][0], P[2][1], P[3][0], P[3][1]);
-        }
-        
-        for (var p = 0; p < P.length; p++) {
-            stroke(PColors[p]);
-            fill(PColors[p]);
-            ellipse(P[p][0], P[p][1], 8);
-        }
-        
-        dist = [0, 0];
-        for (var j = 0; j < P.length - 1; j++) {
-            dist[0] += Math.abs(P[j][0] - P[j + 1][0]);
-            dist[1] += Math.abs(P[j][1] - P[j + 1][1]);
+        var dist = [0, 0];
+        for (var j = 0; j < nPoints - 1; j++) {
+            var point1 = document.getElementById('point-' + j);
+            p1x = point1.getAttributeNS(null, 'cx');
+            p1y = point1.getAttributeNS(null, 'cy');
+            var point2 = document.getElementById('point-' + (j + 1));
+            p2x = point2.getAttributeNS(null, 'cx');
+            p2y = point2.getAttributeNS(null, 'cy');
+            dist[0] += Math.abs(p1x - p2x);
+            dist[1] += Math.abs(p1y - p2y);
         }
         N = dist[0] + dist[1];
-        if (N > 10000) N = 10000;
+        if (N > 5000) N = 5000;
+        
+        drawCurve();
     }
-    return false;*/
 }
 
-/*function draw() {  
-    if (i < N) {
-        for (var j = 0; j < N/60 && i < N; j++) {
-            console.log(N);
-            var t = i/N;
-            var Bn = bn(t, P);
-            stroke('black');
-            fill('black');            
-            ellipse(Bn[0], Bn[1], 1, 1);
-            i++;
-        }
-    }    
-    for (var p = 0; p < P.length; p++) {
-        stroke(PColors[p]);
-        fill(PColors[p]);
-        ellipse(P[p][0], P[p][1], 8);
-    }
-}*/
-
 var nPoints = 0;
+var nLines = 0;
+var i = 0;
 var svg = document.getElementById('svg-inline');
 var offsetTop = svg.getBoundingClientRect().top;
 var offsetLeft = svg.getBoundingClientRect().left;
-document.addEventListener('click', mousePressed2);
+var N;
+document.addEventListener('click', mousePressed);
+document.addEventListener('keydown', keyPressed);
