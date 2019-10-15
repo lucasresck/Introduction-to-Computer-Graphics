@@ -37,6 +37,14 @@ function keyPressed(event) {
     }
 }
 
+function redrawPoints() {
+    for (var p = 0; p < nPoints; p++) {
+        point = document.getElementById('point-' + p);
+        svg.removeChild(point);
+        svg.appendChild(point);
+    }
+}
+
 function drawCurve() {
     if (nPoints >= 2) {
         for (var j = 0; j < N/100 && i < N; j++) {
@@ -50,6 +58,7 @@ function drawCurve() {
             line.setAttributeNS(null, 'id', 'line-' + i);
             svg.appendChild(line);
             nLines++;
+            redrawPoints();
             i++;
         }
         if (i < N) {
