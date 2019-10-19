@@ -1,5 +1,5 @@
 # Introduction-to-Computer-Graphics
-Classroom and assignments codes for Introduction to Computer Graphics, in Applied Mathematics course at Getulio Vargas Foundation. Open this as a [page](https://lucasresck.github.io/Introduction-to-Computer-Graphics/).
+Classroom and assignments codes for Introduction to Computer Graphics, in Applied Mathematics course at Getulio Vargas Foundation.
 
 ## Results
 
