@@ -1,0 +1,10 @@
+html {
+    background-color : cornflowerblue;
+    color : white;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+}
+
+svg {
+    border-style: solid;
+}
