@@ -1,0 +1,76 @@
+h1, p {
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    color: DarkSlateGrey;
+}
+
+html, body {
+    overflow: hidden;
+}
+
+body {
+    background-color: GhostWhite;
+}
+
+/*.svg {
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><circle cx='50%' cy='40%' r='200' fill='grey'/><circle cx='50%' cy='40%' r='170' fill='GhostWhite'/></svg>") no-repeat;
+}*/
+
+/*Source: https://stackoverflow.com/a/53504816*/
+
+.slidecontainer-lamb {
+    float: left;
+    width: 33%;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.intro {
+    float: left;
+    width: 33%;
+}
+
+.slidecontainer-mu {
+    float: left;
+    width: 33%;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.container::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/*Source: https://www.w3schools.com/howto/howto_js_rangeslider.asp */
+  
+.slider {
+    -webkit-appearance: none;
+    width: 200;
+    height: 15px;
+    border-radius: 5px;  
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%; 
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
