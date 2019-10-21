@@ -118,5 +118,5 @@ var svg = document.getElementById('svg-inline');
 var offsetTop = svg.getBoundingClientRect().top;
 var offsetLeft = svg.getBoundingClientRect().left;
 var N;
-document.addEventListener('click', mousePressed);
+svg.addEventListener('click', mousePressed);
 document.addEventListener('keydown', keyPressed);
