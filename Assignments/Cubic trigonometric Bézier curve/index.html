@@ -10,36 +10,48 @@
   <body>
     <h1>Visualização de curvas de Bézier trigonométricas</h1>
       <h2>Introdução</h2>
-      <h2>Metodologia</h2>
-        <h3>Curvas de Bézier</h3>
-          <p>Dado \(n \in \mathbb{N}\), sejam \(P_i \in \mathbb{R}^2\), \(i \in \{0, \cdots, n\}\).
-            Sendo assim, uma curva de Bézier é uma curva \(P\) com parâmetro \(t\) definida por:
-            \[P(t)=\sum_{i=0}^{n} {n\choose i} {(1 - t)}^{n - i} t^i P_i,\]
-            \[t \in [0, 1]\]
-            Dizemos que a curva \(P(t)\) tem grau \(n\) e pontos de controle \(P_i\).</p>
-          <div id="fig1">
-            <svg width="400" height="300">
-                <path d="M 50 50 C 100 250, 300 250, 350 100" stroke="black" fill="transparent"/>
-                <circle cx="50" cy="50" r="5" fill="red" />
-                <circle cx="100" cy="250" r="5" fill="red" />
-                <circle cx="300" cy="250" r="5" fill="red" />
-                <circle cx="350" cy="100" r="5" fill="red" />
-            </svg>
-            <p id="leg1"><b>Figura 1:</b> Exemplo de curva de Bézier com grau 3.</p>
-          </div>
-        <h3>Curvas de Bézier cúbicas trigonométricas</h3>
-          <p>Dados \(\lambda, \mu \in [-2, 1]\), definimos as funções base de curvas de Bézier cúbicas trigonométricas
-            com parâmetros de forma \(\lambda\) e \(\mu\) como:
-            \[\begin{cases} b_0(t) = \left(1-\sin \dfrac{\pi}{2}t\right)^2 \left(1 - \lambda \sin \dfrac{\pi}{2}t\right) \\
-            b_1(t) = \sin \dfrac{\pi}{2}t \left(1-\sin \dfrac{\pi}{2}t\right) \left(2 + \lambda - \lambda \sin \dfrac{\pi}{2}t\right) \\
-            b_2(t) = \cos \dfrac{\pi}{2}t \left(1-\cos \dfrac{\pi}{2}t\right) \left(2 + \mu - \mu \cos \dfrac{\pi}{2}t\right) \\ 
-            b_0(t) = \left(1-\cos \dfrac{\pi}{2}t\right)^2 \left(1 - \mu \cos \dfrac{\pi}{2}t\right) \end{cases}\]</p>
-            <p>Sendo assim, dados pontos \(P_i \in \mathbb{R}^2\), \(i \in \{0, 1, 2, 3\}\), definimos como curva de Bézier cúbica trigonométrica
-              a curva \(r\) com parâmetro \(t\) dada por: \[r(t) = \sum_{i=0}^3 P_i b_i(t),\] \[t \in [0, 1], \lambda, \mu \in [-2,1]\]
-            </p>
-        <h3>Implementação</h2>
-      <h2>Resultados</h2>
-        <h3>Visualização</h3>
+      <h2>Curvas de Bézier</h2>
+        <p>Dado \(n \in \mathbb{N}\), sejam \(P_i \in \mathbb{R}^2\), \(i \in \{0, \cdots, n\}\).
+          Sendo assim, uma curva de Bézier é uma curva \(P\) com parâmetro \(t\) definida por:
+          \[P(t)=\sum_{i=0}^{n} {n\choose i} {(1 - t)}^{n - i} t^i P_i,\]
+          \[t \in [0, 1]\]
+          Dizemos que a curva \(P(t)\) tem grau \(n\) e pontos de controle \(P_i\).</p>
+        <div id="fig1">
+          <svg width="400" height="300">
+              <path d="M 50 50 C 100 250, 300 250, 350 100" stroke="black" fill="transparent"/>
+              <circle cx="50" cy="50" r="5" fill="red" />
+              <circle cx="100" cy="250" r="5" fill="red" />
+              <circle cx="300" cy="250" r="5" fill="red" />
+              <circle cx="350" cy="100" r="5" fill="red" />
+          </svg>
+          <p id="leg1"><b>Figura 1:</b> Exemplo de curva de Bézier com grau 3.</p>
+        </div>
+      <h2>Curvas de Bézier cúbicas trigonométricas</h2>
+        <p>Dados \(\lambda, \mu \in [-2, 1]\), definimos as funções base de curvas de Bézier cúbicas trigonométricas
+          com parâmetros de forma \(\lambda\) e \(\mu\):
+          \[\begin{cases} b_0(t) = \left(1-\sin \dfrac{\pi}{2}t\right)^2 \left(1 - \lambda \sin \dfrac{\pi}{2}t\right) \\
+          b_1(t) = \sin \dfrac{\pi}{2}t \left(1-\sin \dfrac{\pi}{2}t\right) \left(2 + \lambda - \lambda \sin \dfrac{\pi}{2}t\right) \\
+          b_2(t) = \cos \dfrac{\pi}{2}t \left(1-\cos \dfrac{\pi}{2}t\right) \left(2 + \mu - \mu \cos \dfrac{\pi}{2}t\right) \\ 
+          b_0(t) = \left(1-\cos \dfrac{\pi}{2}t\right)^2 \left(1 - \mu \cos \dfrac{\pi}{2}t\right) \end{cases}\]</p>
+          <p>Sendo assim, dados pontos \(P_i \in \mathbb{R}^2\), \(i \in \{0, 1, 2, 3\}\), definimos como curva de Bézier cúbica trigonométrica
+            a curva \(r\) com parâmetro \(t\) dada por: \[r(t) = \sum_{i=0}^3 P_i b_i(t),\] \[t \in [0, 1], \lambda, \mu \in [-2,1]\]
+          </p>
+          <p>Os parâmetros de forma \(\lambda\) e \(\mu\) têm uma certa interpretação. Observe que, se \(t \in (0, 1)\), podemos reescrever a curva como:
+            \[r(t) = \sum_{i = 0}^3 P_i c_i(t) + \lambda \sin \dfrac{\pi}{2}t \left(1 - \sin \dfrac{\pi}{2}t\right)^2 (P_1 - P_0) +
+            \mu \cos \dfrac{\pi}{2}t \left(1 - \cos \dfrac{\pi}{2}t\right)^2 (P_3 - P_2),\]
+            \[\begin{cases}
+              c_0(t) = \left(1 - \sin \dfrac{\pi}{2}t\right)^2 \\
+              c_1(t) = 2 \sin \dfrac{\pi}{2}t \left(1 - \sin \dfrac{\pi}{2}t\right) \\
+              c_2(t) = 2 \cos \dfrac{\pi}{2}t \left(1 - \cos \dfrac{\pi}{2}t\right) \\
+              c_3(t) = \left(1 - \cos \dfrac{\pi}{2}t\right)^2
+            \end{cases}\]
+          </p>
+          <p>
+            Assim, podemos perceber que, se \(\lambda\) aumenta, a curva se move em direção à aresta de controle \(P_1 - P_0\);
+            se \(\lambda\) diminui, a curva se move na direção contrária de \(P_1 - P_0\). Além disso, o análogo vale para \(\mu\).
+          </p>
+      <h2>Metodologia de implementação</h2>
+      <h2>Resultados e visualização</h2>
       <h2>Considerações finais</h2>
       <h2>Referências bibliográficas</h2>
   </body>
