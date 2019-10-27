@@ -23,3 +23,78 @@ div {
 #leg1 {
     text-align: center;
 }
+
+.svg {
+    margin-top: 3%;
+    width: 60%;
+    height: 70%;
+    margin-left: 35%;
+    border-style: solid;
+    border-color: darkgray;
+}
+
+.report {
+    margin-top: 0%;
+}
+
+.value {
+    text-align: center;    
+}
+
+#drawing {
+    margin-top: 0%;
+    margin-bottom: 5%;
+}
+
+#heading {
+    text-align: center;
+    margin-top: -10;
+}
+
+/*https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_rangeslider_round*/
+
+.container {
+    width: 20%;
+    padding: 1%;
+    margin-top: 200px;
+    margin-left: 5%;
+    float: left;
+}
+
+.slidecontainer {
+    width: 100%;
+}
+  
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}

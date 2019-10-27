@@ -16,7 +16,6 @@ function bn(t) {
     var sum = [0, 0]
     for (var j = 0; j <= n; j++) {
         var Bjn = bjn(j, t);
-        console.log(Bjn);
         point = svg.getElementById('point-'+j);
         sum[0] += point.getAttributeNS(null, 'cx') * Bjn;
         sum[1] += point.getAttributeNS(null, 'cy') * Bjn;
@@ -27,6 +26,7 @@ function bn(t) {
 function clearLines() {
     for (var j = 0; j < nLines; j++) {
         var line = document.getElementById('line-' + j);
+        console.log(line);
         svg.removeChild(line);
     }
     nLines = 0;
@@ -41,7 +41,7 @@ function clearPoints() {
 }
 
 function keyPressed(event) {
-    if (event.key == ' ') {
+    if (event.keyCode === 13) {
         clearInterval(draw);
         clearPoints();
         clearLines();
@@ -56,21 +56,42 @@ function redrawPoints() {
     }
 }
 
-function drawCurve() {
+function forDrawing() {
     for (var j = 0; j < N/100 && i < N; j++) {
         var t = i/N;
         var Bn = bn(t);
-        var line = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        line.setAttributeNS(null, 'cx', Bn[0]);
-        line.setAttributeNS(null, 'cy', Bn[1]);
-        line.setAttributeNS(null, 'fill', 'black');
-        line.setAttributeNS(null, 'r', 1);
-        line.setAttributeNS(null, 'id', 'line-' + i);
+        var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttributeNS(null, 'x1', oldPoint[0]);
+        line.setAttributeNS(null, 'y1', oldPoint[1]);
+        oldPoint = Bn;
+        line.setAttributeNS(null, 'x2', Bn[0]);
+        line.setAttributeNS(null, 'y2', Bn[1]);
+        line.setAttributeNS(null, 'style', 'stroke:black;stroke-width:2');
+        line.setAttributeNS(null, 'id', 'line-' + (i - 1));
+        if (i == 1) console.log(line);
         svg.appendChild(line);
         nLines++;
         redrawPoints();
         i++;
     }
+}
+
+function redrawLines() {
+    for (var j = 0; j < nLines; j++) {
+        var line = document.getElementById('line-' + j);
+        svg.removeChild(line);
+    }
+    nLines = 0;
+    i = 1;
+    var firstPoint = document.getElementById('point-0');
+    oldPoint = [firstPoint.getAttributeNS(null, "cx"), firstPoint.getAttributeNS(null, "cy")];
+    while (i < N) {
+        forDrawing();
+    }
+}
+
+function drawCurve() {
+    forDrawing();
     if (i >= N) {
         clearInterval(draw);
         //setTimeout(drawCurve, 10);
@@ -86,7 +107,8 @@ function randomChoice() {
     return color;
 }
 
-function createPoint(event) {        
+function createPoint(event) {
+    if (nPoints == 0) oldPoint = [event.pageX - offsetLeft, event.pageY - offsetTop];
     var point = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     point.setAttributeNS(null, 'cx', event.pageX - offsetLeft);
     point.setAttributeNS(null, 'cy', event.pageY - offsetTop);
@@ -110,12 +132,12 @@ function whatIsN () {
         dist[1] += Math.abs(p1y - p2y);
     }
     N = dist[0] + dist[1];
-    if (N > 5000) N = 5000;
+    if (N > 2000) N = 2000;
 }
 
 function mousePressed(event) {
     if (event.button == 0 && nPoints < 4) {
-        i = 0;
+        i = 1;
         createPoint(event);
         whatIsN();
         if (nPoints == 4) {
@@ -128,9 +150,10 @@ var lamb;
 var mu;
 var draw;
 
+var oldPoint = [0, 0];
 var nPoints = 0;
 var nLines = 0;
-var i = 0;
+var i = 1;
 var svg = document.getElementById('svg-inline');
 var offsetTop = svg.getBoundingClientRect().top;
 var offsetLeft = svg.getBoundingClientRect().left;
@@ -149,6 +172,7 @@ lamb = sliderLamb.value / 100;
 sliderLamb.oninput = function() {
   lamb = this.value / 100;
   outputLamb.innerHTML = this.value / 100;
+  redrawLines();
 }
 
 var sliderMu = document.getElementById("myRange-mu");
@@ -160,4 +184,5 @@ mu = sliderMu.value / 100;
 sliderMu.oninput = function() {
   mu = this.value / 100;
   outputMu.innerHTML = this.value / 100;
+  redrawLines();
 }
