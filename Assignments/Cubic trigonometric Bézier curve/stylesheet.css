@@ -20,7 +20,7 @@ div {
     text-align: center;
 }
 
-#leg1 {
+#cap1 {
     text-align: center;
 }
 
@@ -51,12 +51,22 @@ div {
     margin-top: -10;
 }
 
+.description {
+    padding: 10px;
+    text-align: center;
+    margin: 0;
+}
+
+.cap {
+    font-size: 14px;
+}
+
 /*Source: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_rangeslider_round*/
 
 .container {
     width: 20%;
     padding: 1%;
-    margin-top: 200px;
+    margin-top: 120px;
     margin-left: 5%;
     float: left;
 }
