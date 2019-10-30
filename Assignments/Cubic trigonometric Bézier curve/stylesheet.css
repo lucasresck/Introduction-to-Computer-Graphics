@@ -61,6 +61,11 @@ div {
     font-size: 14px;
 }
 
+#theorem {
+    color: blue;
+    text-align: center;
+}
+
 /*Source: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_rangeslider_round*/
 
 .container {
