@@ -36,6 +36,21 @@
 
     <div class="report">
       <h2>Introdução</h2>
+        <p>
+          Este é um trabalho avaliado para a disciplina de Introdução à Computação Gráfica, do curso de Matemática Aplicada da Fundação Getulio Vargas.
+        </p>
+        <p>
+          Curvas de Bézier são amplamentes utilizadas em Computação Gráfica e design, devido à sua facilidade de aproximar praticamente qualquer forma geométrica. Por exemplo, as fontes utilizadas neste site estão definidas em curvas de Bézier. Porém, quando estamos lidando com circunferências, estas curvas conseguem apenas aproximá-las.
+        </p>
+        <p>
+          Neste trabalho, apresento uma solução já estudada na área da Matemática Aplicada, que são as curvas de Bézier cúbicas trigonométricas com dois parâmetros de forma. Elas conseguem representar de forma exata arcos de elipse.
+        </p>
+        <p>
+          Apresentarei uma breve definição das curvas de Bézier tradicionais. Após, entrarei em detalhes sobre as curvas de Bézier trigonométricas, enunciando o teorema de que essas curvas podem representar elipses. A metodologia de implementação, como código e algoritmo, também é apresentada. Ao final, os resultados e as considerações finais são discutidos.
+        </p>
+        <p>
+          Os resultados por si sós podem ser visualizados de forma imediata no topo desta página.
+        </p>
       <h2>Curvas de Bézier</h2>
         <p>Dado \(n \in \mathbb{N}\), definimos <b>polinômio de Bernstein</b>:
           \[B_i^n(t) = {n \choose i} (1 - t)^{n - i} t^i, \space\space\space\space\space i=0,1,\cdots,n\]</p>
@@ -47,7 +62,7 @@
                   &=\sum_{i=0}^{n} {n\choose i} {(1 - t)}^{n - i} t^i P_i, \space\space\space\space\space t \in [0, 1]
             \end{aligned}
           \end{equation*}\]
-          Dizemos que a curva \(P(t)\) tem grau \(n\) e pontos de controle \(P_i\).</p>
+          Dizemos que a curva \(P(t)\) tem grau \(n\) e pontos de controle \(P_i\). O polígono formado pelos pontos de controle é chamado polígono de controle.</p>
         <div id="fig1">
           <svg width="400" height="300">
               <path d="M 50 50 C 100 250, 300 250, 350 100" stroke="black" fill="transparent"/>
@@ -96,10 +111,54 @@
           <p id="theorem">
             Para visualizar o teorema, clique aqui.
           </p>
+          <p>
+            Além da propriedade de representar arcos de elipses, é demonstrado que as curvas de Bézier trigonométricas se aproximam mais do polígono de controle do que as curvas de Bézier cúbicas tradicionais, para alguns valores de \(\lambda\) e \(\mu\).
+          </p>
       <h2>Metodologia de implementação</h2>
+        <p>
+          O desenho das curvas foi possível a partir do seguinte algoritmo:
+        </p>
+        <ol>
+          <li>Identificar os pontos de controle (onde o usuário clica);</li>
+          <li>Definir uma partição do intervalo \([0, 1]\);</li>
+          <li>Calcular a curva em cada ponto dessa partição;</li>
+          <li>Preencher o restante da curva com segmentos de reta que ligam dois pontos consecutivos da curva já calculados.</li>
+        </ol>
+        <p>
+          Para a animação do desenho das curvas foi estipulado um intervalo de tempo entre o desenho dos segmentos de reta.
+        </p>
+        <p>
+          O conteúdo desta página foi implementado em HTML, enquanto seu design está em CSS. Além disso, o desenho das curvas é realizado em SVG, e os cálculos relativos às curvas, às animações e aos sliders (que controlam os parâmetros) são feitos em Javascript.
+        </p>
+        <p>
+          O código foi majoritariamente implementado com o Visual Studio Code, utilizando o Git como ferramenta de versionamento. É utilizada a biblioteca Math.js para cálculos matemáticos, e os símbolos em Latex presentes no texto utilizam da biblioteca MathJax.
+        </p>
       <h2>Resultados</h2>
+        <p>
+          Os resultados podem ser observados interagindo com a janela de desenho das curvas, no topo da página.
+          Ao plotar quatro pontos na janela, é realizada uma animação do desenho da curva. Pressionando a tecla 'delete', o desenho some.
+        </p>
+        <p>
+          Os <i>sliders</i> controlam os valores dos parâmetros \(\lambda\) e \(\mu\). É possível observar que, aumentando \(\lambda\), a curva se move em direção à aresta de controle \(P_1 - P_0\), por exemplo. Além disso, um efeito bem legal é ajustar os parâmetros quando a curva já está desenhada, pois é realizada uma animação que demonstra a variação da curva.
+        </p>
+        <p>
+          Clicando no texto em azul embaixo do teorema que foi enunciado, surge uma animação que mostra o desenho de uma circunferência utilizando curvas de Bézier trigonométricas. Isso permite visualizar o fato de que essas curvas conseguem representar arcos de elipse muito bem.
+        </p>
       <h2>Considerações finais</h2>
+        <p>
+          O algoritmo implementado obteve sucesso no desenho da curva.
+          Possibilidades futuras de implementação são utilizar outros algoritmos para o desenho, como o algoritmo de De Casteljau,
+          que permite dividir a curva em duas outras, de forma recursiva.
+        </p>
+        <p>
+          Pudemos observar que, realmente, as curvas trigonométricas são muito boas em representar elipses. Por este fato, além de que sua implementação é muito parecida com a curva tradicional, é sugerido (e às vezes desejado) substituir a curva tradicional pela trigonométrica.
+        </p>
       <h2>Referências bibliográficas</h2>
+      <dl>
+          <dt>HAN, Xi-An; MA, YiChen; HUANG, XiLi. The cubic trigonometric Bézier curve with two shape parameters. <b>Applied Mathematics Letters</b>, [s. l.], v. 22, ed. 2, p. 226-231, February 2009. DOI https://doi.org/10.1016/j.aml.2008.03.015. Disponível em: https://www.sciencedirect.com/science/article/pii/S0893965908001262?via%3Dihub. Acesso em: 30 out. 2019.</dt>
+          <dt>PROCEEDINGS OF THE INTERNATIONAL CONFERENCE ON LOGISTICS, ENGINEERING, MANAGEMENT AND COMPUTER SCIENCE, 2014, Shenyang. <b>Complex Quadratic Bézier Curve on Unit Circle</b> [...]. [S. l.]: Atlantis Press, 2014. DOI https://doi.org/10.2991/lemcs-14.2014.254. Disponível em: https://www.atlantis-press.com/proceedings/lemcs-14/12403. Acesso em: 30 out. 2019.</dt>
+          <dt>T. W. Sederberg. "Computer Aided Geometric Design". Computer Aided Geometric Design Course Notes. January 10, 2012.</dt>
+      </dl>
     </div>
     <script src="sketch.js" type="text/javascript"></script>
   </body>
