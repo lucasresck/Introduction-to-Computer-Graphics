@@ -10,10 +10,14 @@ h1, h2, h3 {
     margin-bottom: 30;
 }
 
-p {
+p, ol, dl {
     text-align: justify;
     margin-left: 10%;
     margin-right: 10%;
+}
+
+dt {
+    padding-bottom: 20px;
 }
 
 div {
@@ -63,7 +67,6 @@ div {
 
 #theorem {
     color: blue;
-    text-align: center;
 }
 
 /*Source: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_rangeslider_round*/
