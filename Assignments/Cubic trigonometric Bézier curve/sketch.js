@@ -41,7 +41,7 @@ function clearPoints() {
 }
 
 function keyPressed(event) {
-    if (event.key == ' ') {
+    if (event.keyCode === 46) {
         clearInterval(draw);
         clearPoints();
         clearLines();
@@ -63,13 +63,12 @@ function forDrawing() {
         var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
         line.setAttributeNS(null, 'x1', oldPoint[0]);
         line.setAttributeNS(null, 'y1', oldPoint[1]);
-        oldPoint = Bn;
         line.setAttributeNS(null, 'x2', Bn[0]);
         line.setAttributeNS(null, 'y2', Bn[1]);
         line.setAttributeNS(null, 'style', 'stroke:black;stroke-width:2');
         line.setAttributeNS(null, 'id', 'line-' + (i - 1));
-        if (i == 1) console.log(line);
         svg.appendChild(line);
+        oldPoint = Bn;
         nLines++;
         redrawPoints();
         i++;
@@ -108,10 +107,12 @@ function randomChoice() {
 }
 
 function createPoint(event) {
-    if (nPoints == 0) oldPoint = [event.pageX - offsetLeft, event.pageY - offsetTop];
+    var x = event.pageX - offsetLeft;
+    var y = event.pageY - offsetTop;
+    if (nPoints == 0) oldPoint = [x, y];
     var point = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    point.setAttributeNS(null, 'cx', event.pageX - offsetLeft);
-    point.setAttributeNS(null, 'cy', event.pageY - offsetTop);
+    point.setAttributeNS(null, 'cx', x);
+    point.setAttributeNS(null, 'cy', y);
     point.setAttributeNS(null, 'fill', randomChoice());
     point.setAttributeNS(null, 'r', 5);
     point.setAttributeNS(null, 'id', 'point-' + nPoints);

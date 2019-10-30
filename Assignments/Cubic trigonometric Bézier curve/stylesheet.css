@@ -1,55 +1,85 @@
-h1, p {
+html {
     font-family: Arial, Helvetica, sans-serif;
-    text-align: center;
     color: DarkSlateGrey;
-}
-
-html, body {
-    overflow: hidden;
-}
-
-body {
     background-color: GhostWhite;
 }
 
-/*.svg {
-    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><circle cx='50%' cy='40%' r='200' fill='grey'/><circle cx='50%' cy='40%' r='170' fill='GhostWhite'/></svg>") no-repeat;
-}*/
-
-/*Source: https://stackoverflow.com/a/53504816*/
-
-.slidecontainer-lamb {
-    float: left;
-    width: 33%;
+h1, h2, h3 {
     text-align: center;
-    margin-top: 30px;
+    margin-top: 30;
+    margin-bottom: 30;
 }
 
-.intro {
-    float: left;
-    width: 33%;
+p {
+    text-align: justify;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
-.slidecontainer-mu {
-    float: left;
-    width: 33%;
+div {
     text-align: center;
-    margin-top: 30px;
 }
 
-.container::after {
-    content: "";
-    display: table;
-    clear: both;
+#cap1 {
+    text-align: center;
 }
 
-/*Source: https://www.w3schools.com/howto/howto_js_rangeslider.asp */
+.svg {
+    margin-top: 3%;
+    width: 60%;
+    height: 70%;
+    margin-left: 35%;
+    border-style: solid;
+    border-color: darkgray;
+}
+
+.report {
+    margin-top: 0%;
+}
+
+.value {
+    text-align: center;    
+}
+
+#drawing {
+    margin-top: 0%;
+    margin-bottom: 5%;
+}
+
+#heading {
+    text-align: center;
+    margin-top: -10;
+}
+
+.description {
+    padding: 10px;
+    text-align: center;
+    margin: 0;
+}
+
+.cap {
+    font-size: 14px;
+}
+
+/*Source: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_rangeslider_round*/
+
+.container {
+    width: 20%;
+    padding: 1%;
+    margin-top: 120px;
+    margin-left: 5%;
+    float: left;
+}
+
+.slidecontainer {
+    width: 100%;
+}
   
 .slider {
     -webkit-appearance: none;
-    width: 200;
+    width: 100%;
     height: 15px;
-    border-radius: 5px;  
+    border-radius: 5px;
     background: #d3d3d3;
     outline: none;
     opacity: 0.7;
@@ -57,12 +87,16 @@ body {
     transition: opacity .2s;
 }
 
+.slider:hover {
+    opacity: 1;
+}
+
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 25px;
     height: 25px;
-    border-radius: 50%; 
+    border-radius: 50%;
     background: #4CAF50;
     cursor: pointer;
 }

@@ -1,33 +1,102 @@
 <html>
   <head>
-    <title>Cubic trigonometric Bézier curve</title>
+    <title>Curvas de Bézier trigonométricas</title>
     <link rel="stylesheet" type="text/css" href="stylesheet.css">
     <meta http-equiv=”Content-Type” content=”text/html; charset=utf-8″>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/6.2.2/math.js"></script>
   </head>
 
   <body>
-    <!--Source: https://www.w3schools.com/howto/howto_js_rangeslider.asp-->
-    <section class="container">
-      <div class="slidecontainer-lamb">
-        <input type="range" min="-200" max="100" value="-50" class="slider" id="myRange-lamb">
-        <p>&lambda; = <span id="demo-lamb"></span></p>
+    <h1>Visualização de curvas de Bézier trigonométricas</h1>
+    <p id="heading">Lucas Emanuel Resck Domingues, Introdução à Computação Gráfica</p>
+
+    <!--Source: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_rangeslider_round*/-->
+
+    <div id="drawing">
+      <div class="container">
+        <div class="slidecontainer">
+            <input type="range" min="-200" max="100" value="0" class="slider" id="myRange-lamb">
+            <p class="value">&lambda; = <span id="demo-lamb"></span></p>
+        </div>
+        <div class="slidecontainer">
+          <input type="range" min="-200" max="100" value="0" class="slider" id="myRange-mu">
+          <p class="value">&mu; = <span id="demo-mu"></span></p>
+        </div>
+        <p class="description">Escolha os parâmetros, clique para definir os pontos e pressione 'delete' para apagá-los.</p>
+        <p class="description">Experimente mudar os parâmetros quando a curva já estiver desenhada :)</p>
       </div>
 
-      <div class="intro">
-        <h1>Cubic trigonometric Bézier curve</h1>
-        <p>Try clicking somewhere. Press spacebar to clear.</p>
+      <div class="svg">
+        <svg id='svg-inline' width="100%" height="100%">
+        </svg>
       </div>
+    </div>
 
-      <div class="slidecontainer-mu">
-        <input type="range" min="-200" max="100" value="-50" class="slider" id="myRange-mu">
-        <p>&mu; = <span id="demo-mu"></span></p>
-      </div>
-    </section>
-    
-    <div class="svg">
-      <svg id='svg-inline' width="100%" height="100%">
-      </svg>
+    <div class="report">
+      <h2>Introdução</h2>
+      <h2>Curvas de Bézier</h2>
+        <p>Dado \(n \in \mathbb{N}\), definimos <b>polinômio de Bernstein</b>:
+          \[B_i^n(t) = {n \choose i} (1 - t)^{n - i} t^i, \space\space\space\space\space i=0,1,\cdots,n\]</p>
+        <p>Sejam os pontos \(P_i \in \mathbb{R}^2\), \(i=0,1,\cdots,n\).
+          Sendo assim, uma curva de Bézier é uma curva \(P\) com parâmetro \(t\) definida por:
+          \[\begin{equation*}
+            \begin{aligned}
+            P(t)  &= \sum_{i=0}^{n} B_i^n(t) P_i \\
+                  &=\sum_{i=0}^{n} {n\choose i} {(1 - t)}^{n - i} t^i P_i, \space\space\space\space\space t \in [0, 1]
+            \end{aligned}
+          \end{equation*}\]
+          Dizemos que a curva \(P(t)\) tem grau \(n\) e pontos de controle \(P_i\).</p>
+        <div id="fig1">
+          <svg width="400" height="300">
+              <path d="M 50 50 C 100 250, 300 250, 350 100" stroke="black" fill="transparent"/>
+              <circle cx="50" cy="50" r="5" fill="red" />
+              <circle cx="100" cy="250" r="5" fill="blue" />
+              <circle cx="300" cy="250" r="5" fill="green" />
+              <circle cx="350" cy="100" r="5" fill="red" />
+          </svg>
+          <p class="cap" id="cap1"><b>Figura 1:</b> Exemplo de curva de Bézier com grau 3.</p>
+        </div>
+      <h2>Curvas de Bézier cúbicas trigonométricas</h2>
+        <p>Dados \(\lambda, \mu \in [-2, 1]\), definimos as funções base de curvas de Bézier cúbicas trigonométricas
+          com parâmetros de forma \(\lambda\) e \(\mu\):
+          \[\begin{cases} b_0(t) = \left(1-\sin \dfrac{\pi}{2}t\right)^2 \left(1 - \lambda \sin \dfrac{\pi}{2}t\right) \\
+          b_1(t) = \sin \dfrac{\pi}{2}t \left(1-\sin \dfrac{\pi}{2}t\right) \left(2 + \lambda - \lambda \sin \dfrac{\pi}{2}t\right) \\
+          b_2(t) = \cos \dfrac{\pi}{2}t \left(1-\cos \dfrac{\pi}{2}t\right) \left(2 + \mu - \mu \cos \dfrac{\pi}{2}t\right) \\ 
+          b_0(t) = \left(1-\cos \dfrac{\pi}{2}t\right)^2 \left(1 - \mu \cos \dfrac{\pi}{2}t\right) \end{cases}\]</p>
+          <p>Sendo assim, dados pontos \(P_i \in \mathbb{R}^2\), \(i = 0, 1, 2, 3\), definimos como curva de Bézier cúbica trigonométrica
+            a curva \(r\) com parâmetro \(t\) dada por:
+            \[r(t) = \sum_{i=0}^3 P_i b_i(t), \space\space\space\space\space t \in [0, 1], \lambda, \mu \in [-2,1]\]
+          </p>
+          <p>Os parâmetros de forma \(\lambda\) e \(\mu\) têm uma certa interpretação. Observe que, se \(t \in (0, 1)\), podemos reescrever a curva como:
+            \[r(t) = \sum_{i = 0}^3 P_i c_i(t) + \color{blue}\lambda\color{DarkSlateGrey} \sin \dfrac{\pi}{2}t \left(1 - \sin \dfrac{\pi}{2}t\right)^2 \color{blue}(P_1 - P_0)\color{DarkSlateGrey} +
+            \color{red}\mu\color{DarkSlateGrey} \cos \dfrac{\pi}{2}t \left(1 - \cos \dfrac{\pi}{2}t\right)^2 \color{red}(P_3 - P_2)\color{DarkSlateGrey},\]
+            \[\begin{cases}
+              c_0(t) = \left(1 - \sin \dfrac{\pi}{2}t\right)^2 \\
+              c_1(t) = 2 \sin \dfrac{\pi}{2}t \left(1 - \sin \dfrac{\pi}{2}t\right) \\
+              c_2(t) = 2 \cos \dfrac{\pi}{2}t \left(1 - \cos \dfrac{\pi}{2}t\right) \\
+              c_3(t) = \left(1 - \cos \dfrac{\pi}{2}t\right)^2
+            \end{cases}\]
+          </p>
+          <p>
+            Assim, podemos perceber que, se \(\color{blue}\lambda\color{DarkSlateGrey}\) aumenta, a curva se move em direção à aresta de controle \(\color{blue}P_1 - P_0\color{DarkSlateGrey}\);
+            se \(\color{blue}\lambda\color{DarkSlateGrey}\) diminui, a curva se move na direção contrária de \(\color{blue}P_1 - P_0\color{DarkSlateGrey}\). Além disso, o análogo vale para \(\color{red}\mu\color{DarkSlateGrey}\).
+          </p>
+          <p>
+            Uma característica importante das curvas de Bézier trigonométricas é o fato de que é possível representar arcos de elipses, como o seguinte teorema enuncia:
+          </p>
+          <p>
+            <b>Teorema:</b> Sejam \(P_0\), \(P_1\), \(P_2\) e \(P_3\) pontos de controle de uma curva de Bézier trigonométrica:
+            \[P_0 = (a, 0), \space\space\space\space\space P_1 = \left(a, \dfrac{b}{2}\right), \space\space\space\space\space P_2 = \left(\dfrac{a}{2}, b\right), \space\space\space\space\space P_3 = (0, b)\]
+            Se \(\lambda = \mu = 0\), a curva é dada por
+            \[r(t) = \left(a \cos \dfrac{\pi}{2}t, b \sin \dfrac{\pi}{2}t\right), \space\space\space\space\space t \in [0, 1]\]
+            ou seja, um arco de elipse com semieixos \(a\) e \(b\).
+          </p>
+      <h2>Metodologia de implementação</h2>
+      <h2>Resultados</h2>
+      <h2>Considerações finais</h2>
+      <h2>Referências bibliográficas</h2>
     </div>
     <script src="sketch.js" type="text/javascript"></script>
   </body>
