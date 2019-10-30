@@ -298,6 +298,12 @@ function drawCircle() {
 }
 
 function theoremPressed(event) {
+    outputLamb.innerHTML = 0;
+    lamb = 0;
+    sliderLamb.value = 0;
+    outputMu.innerHTML = 0;
+    mu = 0;
+    sliderMu.value = 0;
     scrollDelay = setInterval("scroll(" + -event.pageY / numberOfScrolls + ")", delayBetweenScroll);
 }
 
