@@ -1,3 +1,11 @@
+class myEvent {
+    constructor(button, pageX, pageY) {
+        this.button = button;
+        this.pageX = pageX;
+        this.pageY = pageY;
+    }
+}
+
 function bjn(j, t) {
     if (j == 0) {
         return Math.pow((1 - Math.sin(Math.PI * t / 2)), 2) * (1 - lamb * Math.sin(Math.PI * t / 2));
@@ -26,7 +34,6 @@ function bn(t) {
 function clearLines() {
     for (var j = 0; j < nLines; j++) {
         var line = document.getElementById('line-' + j);
-        console.log(line);
         svg.removeChild(line);
     }
     nLines = 0;
@@ -45,6 +52,7 @@ function keyPressed(event) {
         clearInterval(draw);
         clearPoints();
         clearLines();
+        clearCopied();
     }
 }
 
@@ -90,9 +98,13 @@ function redrawLines() {
 }
 
 function drawCurve() {
+    console.log("Here2");
     forDrawing();
     if (i >= N) {
         clearInterval(draw);
+        if (circle > 0) {
+            drawCircle();
+        }
         //setTimeout(drawCurve, 10);
     }
 }
@@ -142,14 +154,161 @@ function mousePressed(event) {
         createPoint(event);
         whatIsN();
         if (nPoints == 4) {
+            console.log("Expect here");
             draw = setInterval(drawCurve, 10);
+            console.log("Expect after");
         }
     }
+}
+
+function scroll(y) {
+    clearInterval(draw);
+    clearCopied();
+    clearPoints();
+    clearLines();    
+    window.scrollBy(0, y);
+    scrolling++;
+    if (scrolling == numberOfScrolls) {
+        scrolling = 0;
+        clearInterval(scrollDelay);
+        drawCircle();
+    }
+}
+
+function copyAll() {
+    for (var j = 0; j < nLines; j++) {
+        var line = document.getElementById('line-' + j);
+        line.setAttributeNS(null, "id", "line-" + circle + "-" + j);
+        svg.appendChild(line);
+    }
+    nLines = 0;
+    for (var j = 0; j < nPoints; j++) {
+        var point = document.getElementById('point-' + j);
+        point.setAttributeNS(null, "id", "point-" + circle + "-" + j);
+        svg.appendChild(point);
+    }
+    nPoints = 0;
+}
+
+function clearCopied() {
+    circle = 0;
+    for (var k = 1; k <= 4; k++) {
+        for (var j = 0; j < 4; j++) {
+            var point = document.getElementById("point-" + k + "-" + j);
+            if (point)
+                svg.removeChild(point);
+        }
+    }
+    for (var k = 1; k <= 4; k++) {
+        for (var j = 0; j < 2000; j++) {
+            var line = document.getElementById("line-" + k + "-" + j);
+            if (line)
+                svg.removeChild(line);
+        }
+    }
+}
+
+function drawCircle() {
+    var r = 150;
+    if (circle == 0) {
+        circle++;
+        var x = offsetLeft + svg.getBoundingClientRect().width / 2 + r;
+        var y = offsetTop + svg.getBoundingClientRect().height / 2;
+        var event = new myEvent(0, x, y);  // Simulate clicking
+        mousePressed(event);
+        x = offsetLeft + svg.getBoundingClientRect().width / 2 + r;
+        y = offsetTop + svg.getBoundingClientRect().height / 2 + r / 2;
+        event = new myEvent(0, x, y);  // Simulate clicking
+        mousePressed(event);
+        x = offsetLeft + svg.getBoundingClientRect().width / 2 + r / 2;
+        y = offsetTop + svg.getBoundingClientRect().height / 2 + r;
+        event = new myEvent(0, x, y);  // Simulate clicking
+        mousePressed(event);
+        x = offsetLeft + svg.getBoundingClientRect().width / 2;
+        y = offsetTop + svg.getBoundingClientRect().height / 2 + r;
+        event = new myEvent(0, x, y);  // Simulate clicking
+        console.log("Expect before");
+        mousePressed(event);
+        console.log(nPoints);
+    }
+    else if (circle == 1) {
+        copyAll();
+        circle++;
+        var x = offsetLeft + svg.getBoundingClientRect().width / 2;
+        var y = offsetTop + svg.getBoundingClientRect().height / 2 + r;
+        var event = new myEvent(0, x, y);  // Simulate clicking
+        mousePressed(event);
+        x = offsetLeft + svg.getBoundingClientRect().width / 2 - r / 2;
+        y = offsetTop + svg.getBoundingClientRect().height / 2 + r;
+        event = new myEvent(0, x, y);  // Simulate clicking
+        mousePressed(event);
+        x = offsetLeft + svg.getBoundingClientRect().width / 2 - r;
+        y = offsetTop + svg.getBoundingClientRect().height / 2 + r / 2;
+        event = new myEvent(0, x, y);  // Simulate clicking
+        mousePressed(event);
+        x = offsetLeft + svg.getBoundingClientRect().width / 2 - r;
+        y = offsetTop + svg.getBoundingClientRect().height / 2;
+        event = new myEvent(0, x, y);  // Simulate clicking
+        mousePressed(event);
+    }
+    else if (circle == 2) {
+        copyAll();
+        circle++;
+        var x = offsetLeft + svg.getBoundingClientRect().width / 2 - r;
+        var y = offsetTop + svg.getBoundingClientRect().height / 2;
+        var event = new myEvent(0, x, y);  // Simulate clicking
+        mousePressed(event);
+        x = offsetLeft + svg.getBoundingClientRect().width / 2 - r;
+        y = offsetTop + svg.getBoundingClientRect().height / 2 - r / 2;
+        event = new myEvent(0, x, y);  // Simulate clicking
+        mousePressed(event);
+        x = offsetLeft + svg.getBoundingClientRect().width / 2 - r / 2;
+        y = offsetTop + svg.getBoundingClientRect().height / 2 - r;
+        event = new myEvent(0, x, y);  // Simulate clicking
+        mousePressed(event);
+        x = offsetLeft + svg.getBoundingClientRect().width / 2;
+        y = offsetTop + svg.getBoundingClientRect().height / 2 - r;
+        event = new myEvent(0, x, y);  // Simulate clicking
+        mousePressed(event);
+    }
+    else if (circle == 3) {
+        copyAll();
+        circle++;
+        var x = offsetLeft + svg.getBoundingClientRect().width / 2;
+        var y = offsetTop + svg.getBoundingClientRect().height / 2 - r;
+        var event = new myEvent(0, x, y);  // Simulate clicking
+        mousePressed(event);
+        x = offsetLeft + svg.getBoundingClientRect().width / 2 + r / 2;
+        y = offsetTop + svg.getBoundingClientRect().height / 2 - r;
+        event = new myEvent(0, x, y);  // Simulate clicking
+        mousePressed(event);
+        x = offsetLeft + svg.getBoundingClientRect().width / 2 + r;
+        y = offsetTop + svg.getBoundingClientRect().height / 2 - r / 2;
+        event = new myEvent(0, x, y);  // Simulate clicking
+        mousePressed(event);
+        x = offsetLeft + svg.getBoundingClientRect().width / 2 + r;
+        y = offsetTop + svg.getBoundingClientRect().height / 2;
+        event = new myEvent(0, x, y);  // Simulate clicking
+        mousePressed(event);
+    }
+    else {
+        copyAll();
+        circle = 0;
+    }
+}
+
+function theoremPressed(event) {
+    scrollDelay = setInterval("scroll(" + -event.pageY / numberOfScrolls + ")", delayBetweenScroll);
 }
 
 var lamb;
 var mu;
 var draw;
+var scrolling = 0;
+var scrollDelay;
+var delayBetweenScroll = 10;
+var numberOfScrolls = 100;
+var circle = 0;
 
 var oldPoint = [0, 0];
 var nPoints = 0;
@@ -161,6 +320,8 @@ var offsetLeft = svg.getBoundingClientRect().left;
 var N;
 svg.addEventListener('click', mousePressed);
 document.addEventListener('keydown', keyPressed);
+var theorem = document.getElementById("theorem");
+theorem.addEventListener("click", theoremPressed);
 
 //Source: https://www.w3schools.com/howto/howto_js_rangeslider.asp
 
