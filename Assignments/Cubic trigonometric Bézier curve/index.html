@@ -40,10 +40,10 @@
           Este é um trabalho avaliado para a disciplina de Introdução à Computação Gráfica, do curso de Matemática Aplicada da Fundação Getulio Vargas.
         </p>
         <p>
-          Curvas de Bézier são amplamentes utilizadas em Computação Gráfica e design, devido à sua facilidade de aproximar praticamente qualquer forma geométrica. Por exemplo, as fontes utilizadas neste site estão definidas em curvas de Bézier. Porém, quando estamos lidando com circunferências, estas curvas conseguem apenas aproximá-las.
+          Curvas de Bézier são amplamentes utilizadas em Computação Gráfica e design, devido à sua facilidade de aproximar praticamente qualquer forma geométrica. Por exemplo, as fontes utilizadas neste site estão definidas em curvas de Bézier. Porém, quando estamos lidando com circunferências, estas curvas conseguem apenas aproximá-las (HAN, 2009).
         </p>
         <p>
-          Neste trabalho, apresento uma solução já estudada na área da Matemática Aplicada, que são as curvas de Bézier cúbicas trigonométricas com dois parâmetros de forma. Elas conseguem representar de forma exata arcos de elipse.
+          Neste trabalho, apresento uma solução já estudada na área da Matemática Aplicada, que são as curvas de Bézier cúbicas trigonométricas com dois parâmetros de forma. Elas conseguem representar de forma exata arcos de elipse (HAN, 2009).
         </p>
         <p>
           Apresentarei uma breve definição das curvas de Bézier tradicionais. Após, entrarei em detalhes sobre as curvas de Bézier trigonométricas, enunciando o teorema de que essas curvas podem representar elipses. A metodologia de implementação, como código e algoritmo, também é apresentada. Ao final, os resultados e as considerações finais são discutidos.
@@ -79,7 +79,7 @@
           \[\begin{cases} b_0(t) = \left(1-\sin \dfrac{\pi}{2}t\right)^2 \left(1 - \lambda \sin \dfrac{\pi}{2}t\right) \\
           b_1(t) = \sin \dfrac{\pi}{2}t \left(1-\sin \dfrac{\pi}{2}t\right) \left(2 + \lambda - \lambda \sin \dfrac{\pi}{2}t\right) \\
           b_2(t) = \cos \dfrac{\pi}{2}t \left(1-\cos \dfrac{\pi}{2}t\right) \left(2 + \mu - \mu \cos \dfrac{\pi}{2}t\right) \\ 
-          b_0(t) = \left(1-\cos \dfrac{\pi}{2}t\right)^2 \left(1 - \mu \cos \dfrac{\pi}{2}t\right) \end{cases}\]</p>
+          b_3(t) = \left(1-\cos \dfrac{\pi}{2}t\right)^2 \left(1 - \mu \cos \dfrac{\pi}{2}t\right) \end{cases}\]</p>
           <p>Sendo assim, dados pontos \(P_i \in \mathbb{R}^2\), \(i = 0, 1, 2, 3\), definimos como curva de Bézier cúbica trigonométrica
             a curva \(r\) com parâmetro \(t\) dada por:
             \[r(t) = \sum_{i=0}^3 P_i b_i(t), \space\space\space\space\space t \in [0, 1], \lambda, \mu \in [-2,1]\]
@@ -96,7 +96,7 @@
           </p>
           <p>
             Assim, podemos perceber que, se \(\color{blue}\lambda\color{DarkSlateGrey}\) aumenta, a curva se move em direção à aresta de controle \(\color{blue}P_1 - P_0\color{DarkSlateGrey}\);
-            se \(\color{blue}\lambda\color{DarkSlateGrey}\) diminui, a curva se move na direção contrária de \(\color{blue}P_1 - P_0\color{DarkSlateGrey}\). Além disso, o análogo vale para \(\color{red}\mu\color{DarkSlateGrey}\).
+            se \(\color{blue}\lambda\color{DarkSlateGrey}\) diminui, a curva se move na direção contrária de \(\color{blue}P_1 - P_0\color{DarkSlateGrey}\). O análogo vale para \(\color{red}\mu\color{DarkSlateGrey}\).
           </p>
           <p>
             Uma característica importante das curvas de Bézier trigonométricas é o fato de que é possível representar arcos de elipses, como o seguinte teorema enuncia:
@@ -142,7 +142,7 @@
           Os <i>sliders</i> controlam os valores dos parâmetros \(\lambda\) e \(\mu\). É possível observar que, aumentando \(\lambda\), a curva se move em direção à aresta de controle \(P_1 - P_0\), por exemplo. Além disso, um efeito bem legal é ajustar os parâmetros quando a curva já está desenhada, pois é realizada uma animação que demonstra a variação da curva.
         </p>
         <p>
-          Clicando no texto em azul embaixo do teorema que foi enunciado, surge uma animação que mostra o desenho de uma circunferência utilizando curvas de Bézier trigonométricas. Isso permite visualizar o fato de que essas curvas conseguem representar arcos de elipse muito bem.
+          Clicando no texto em azul embaixo do teorema enunciado, surge uma animação que mostra o desenho de uma circunferência utilizando curvas de Bézier trigonométricas. Isso permite visualizar o fato de que essas curvas conseguem representar arcos de elipse muito bem.
         </p>
       <h2>Considerações finais</h2>
         <p>
@@ -157,7 +157,7 @@
       <dl>
           <dt>HAN, Xi-An; MA, YiChen; HUANG, XiLi. The cubic trigonometric Bézier curve with two shape parameters. <b>Applied Mathematics Letters</b>, [s. l.], v. 22, ed. 2, p. 226-231, February 2009. DOI https://doi.org/10.1016/j.aml.2008.03.015. Disponível em: https://www.sciencedirect.com/science/article/pii/S0893965908001262?via%3Dihub. Acesso em: 30 out. 2019.</dt>
           <dt>PROCEEDINGS OF THE INTERNATIONAL CONFERENCE ON LOGISTICS, ENGINEERING, MANAGEMENT AND COMPUTER SCIENCE, 2014, Shenyang. <b>Complex Quadratic Bézier Curve on Unit Circle</b> [...]. [S. l.]: Atlantis Press, 2014. DOI https://doi.org/10.2991/lemcs-14.2014.254. Disponível em: https://www.atlantis-press.com/proceedings/lemcs-14/12403. Acesso em: 30 out. 2019.</dt>
-          <dt>T. W. Sederberg. "Computer Aided Geometric Design". Computer Aided Geometric Design Course Notes. January 10, 2012.</dt>
+          <dt>Sederberg, Thomas W., "Computer Aided Geometric Design" (2012). <i>All Faculty Publications</i>. 1. https://scholarsarchive.byu.edu/facpub/1</dt>
       </dl>
     </div>
     <script src="sketch.js" type="text/javascript"></script>
