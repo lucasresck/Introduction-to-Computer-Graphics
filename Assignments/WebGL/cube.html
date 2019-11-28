@@ -1,0 +1,107 @@
+<!-- Inspired by: https://www.tutorialspoint.com/webgl/index.htm -->
+
+<!doctype html>
+<html>
+    <head>
+        <title>Hello, world!</title>
+    </head>
+    <body>
+        <h1>"Hello, world!" in WebGL</h1>
+        <canvas id='canvas' width='500' height='500'></canvas>
+        <script>
+
+            // Get GL context
+
+            var canvas = document.getElementById('canvas');
+            var gl = canvas.getContext('experimental-webgl');
+
+            //Get geometry
+
+            var vertices = [0.3, 0.3, 0.0,
+                            0.3, -0.8, 0.0,
+                            -0.8, -0.8, 0.0,
+                            -0.8, 0.3, 0.0,
+                            0.8, 0.8, 0.5,
+                            0.8, -0.3, 0.5,
+                            -0.3, -0.3, 0.5,
+                            -0.3, 0.8, 0.5];
+
+            var indices = [0, 1, 2, 3, 0, 4, 5, 1, 5, 6, 2, 6, 7, 3, 7, 4];
+
+            var colors = [  1, 0, 0,
+                            0, 1, 0,
+                            0, 0, 1,
+                            1, 0, 0,
+                            0, 1, 0,
+                            0, 0, 1,
+                            1, 0, 0,
+                            0, 1, 0];
+
+            // Create buffers
+
+            var vertex_buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+            gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+            var index_buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+            gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+            var color_buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, color_buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+            gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+            // Shaders
+
+            var vertCode = 'attribute vec3 coordinates;'+
+            'attribute vec3 color;'+
+            'varying vec3 vColor;'+
+                
+            'void main(void) {' +
+                ' gl_Position = vec4(coordinates, 1.0);' +
+                'vColor = color;'+
+            '}';
+            var vertShader = gl.createShader(gl.VERTEX_SHADER);
+            gl.shaderSource(vertShader, vertCode);
+            gl.compileShader(vertShader);
+
+            var fragCode = 'precision mediump float;'+
+            'varying vec3 vColor;'+
+            'void main(void) {'+
+                'gl_FragColor = vec4(vColor, 1.);'+
+            '}';
+            var fragShader = gl.createShader(gl.FRAGMENT_SHADER);
+            gl.shaderSource(fragShader, fragCode);
+            gl.compileShader(fragShader);
+
+            var shaderProgram = gl.createProgram();
+            gl.attachShader(shaderProgram, vertShader);
+            gl.attachShader(shaderProgram, fragShader);
+            gl.linkProgram(shaderProgram);
+            gl.useProgram(shaderProgram);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer);
+            var coord = gl.getAttribLocation(shaderProgram, "coordinates");
+            gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
+            gl.enableVertexAttribArray(coord);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, color_buffer);
+            var color = gl.getAttribLocation(shaderProgram, "color");
+            gl.vertexAttribPointer(color, 3, gl.FLOAT, false, 0, 0);
+            gl.enableVertexAttribArray(color);
+
+            // Draw
+
+            gl.clearColor(0.0, 0.0, 0.0, 1.0);
+            gl.enable(gl.DEPTH_TEST);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            gl.viewport(0,0,canvas.width,canvas.height);
+            gl.drawElements(gl.LINE_STRIP, indices.length, gl.UNSIGNED_SHORT,0);
+
+        </script>
+    </body>
+</html>
