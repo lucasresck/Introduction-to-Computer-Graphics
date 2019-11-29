@@ -14,7 +14,8 @@
         </style>
     </head>
     <body>
-        <h1>"Hello, world!" in WebGL</h1>
+        <h1>"Hello, world!" em WebGL</h1>
+        <p>O cubo abaixo foi implementado em WebGL e canvas, inspirado por <a href='https://www.tutorialspoint.com/webgl/index.htm'>Tutorials Point</a>.</p>
         <div>
             <canvas id='canvas' width='800' height='500'></canvas>
         </div>
@@ -157,18 +158,19 @@
                 m[10] = c*m[10]-s*mv8;
             }
 
-            var rotation = 0.01;
-            rotateX(mov_matrix, 0.5);
+            var rotation = 0;
 
             function draw() {
-                //rotation += 0.001;
+                rotation += 0.01;
                 gl.clearColor(0.0, 0.0, 0.0, 1.0);
                 gl.clearDepth(1.0);
                 gl.enable(gl.DEPTH_TEST);
                 gl.depthFunc(gl.LEQUAL);
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
                 gl.viewport(0,0,canvas.width,canvas.height);
-
+                
+                mov_matrix = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
+                rotateX(mov_matrix, 0.3* rotation);
                 rotateY(mov_matrix, rotation);
 
                 gl.uniformMatrix4fv(Pmatrix, false, proj_matrix);
