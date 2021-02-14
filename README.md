@@ -1,7 +1,7 @@
-# Introduction-to-Computer-Graphics
-Classroom and assignments codes for Introduction to Computer Graphics, in Applied Mathematics course at Getulio Vargas Foundation (FGV, 2019).
+# computer-graphics
+Classroom and assignments codes for [Introduction to Computer Graphics](https://emap.fgv.br/sites/emap.fgv.br/files/u77/eletiva_-_introducao_a_computacao_grafica.pdf), in Applied Mathematics course at Getulio Vargas Foundation (FGV, 2019).
 
-## Results
+## Projects
 
 - [Checkers game](https://lucasresck.github.io/Introduction-to-Computer-Graphics/Assignments/Class%20assignments/Assignment%201/Assignment%201.html)
 - [**Graphic processing techniques for image noise reduction**](https://lucasresck.github.io/Introduction-to-Computer-Graphics/Assignments/A1%20assignment/Report.html)
