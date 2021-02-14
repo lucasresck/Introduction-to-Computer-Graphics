@@ -1,5 +1,5 @@
 # Introduction-to-Computer-Graphics
-Classroom and assignments codes for Introduction to Computer Graphics, in Applied Mathematics course at Getulio Vargas Foundation.
+Classroom and assignments codes for Introduction to Computer Graphics, in Applied Mathematics course at Getulio Vargas Foundation (FGV, 2019).
 
 ## Results
 
